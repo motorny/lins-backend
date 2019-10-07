@@ -12,7 +12,7 @@ class UserService {
 
     static async addUser(newUser) {
         try {
-            return await db.User.create(newUser);
+            return await db.users.create(newUser);
         } catch (error) {
             throw error;
         }
