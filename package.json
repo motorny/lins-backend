@@ -1,10 +1,9 @@
 {
   "name": "lins-backend",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node src/index.js",
-    "start:dev": "nodemon --exec babel-node src/index.js localhost 9000"
+    "start:dev": "nodemon --exec babel-node app.js"
   },
   "dependencies": {
     "body-parser": "latest",
@@ -19,6 +18,8 @@
     "sequelize": "^5.19.6"
   },
   "devDependencies": {
+    "nodemon": "^1.19.4",
+    "@babel/polyfill": "^7.6.0",
     "@babel/cli": "^7.6.4",
     "@babel/core": "^7.6.4",
     "@babel/node": "^7.6.3",
