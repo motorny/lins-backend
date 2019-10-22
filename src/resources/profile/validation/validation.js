@@ -1,12 +1,12 @@
 const Joi = require('joi');
 
 const registerNewUserValidationSchema = Joi.object().keys({
-    username: Joi.string().min(1),
-    password: Joi.string().min(7),
+    username: Joi.string().required(),
+    password: Joi.string().required(),
     image_url: Joi.string(),
-    location: Joi.string().min(1),
+    location: Joi.string().required(),
     role: Joi.number().integer(),
-    contact: Joi.string().min(1),
+    contact: Joi.string().required(),
     points: Joi.string(),
 });
 
