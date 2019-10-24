@@ -43,6 +43,10 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 notEmpty: true,
             },
+            unique: {
+                args: true,
+                msg: 'This username is already existing. Choose something else'
+            },
         },
         password_hash: DataTypes.STRING,
         password: {

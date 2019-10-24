@@ -10,12 +10,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       username: {
-        //uniqie?
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
           notEmpty: true,
         },
+        unique: true,
       },
       password_hash: Sequelize.STRING,
       image_url: {
