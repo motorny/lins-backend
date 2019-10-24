@@ -18,6 +18,7 @@ module.exports = {
         unique: true,
       },
       password_hash: Sequelize.STRING,
+      password_salt: Sequelize.STRING,
       image_url: {
         type: Sequelize.STRING,
         validate: {

@@ -49,13 +49,15 @@ module.exports = (sequelize, DataTypes) => {
             },
         },
         password_hash: DataTypes.STRING,
+        password_salt: DataTypes.STRING,
         password: {
             type: DataTypes.VIRTUAL,
             set: function (val) {
                 this.setDataValue("password", val);
                 const salt = genRandomString(16); /** Gives us salt of length 16 */
                 const encodedPassword = sha512(val, salt);
-                this.setDataValue("password_hash", encodedPassword.salt + encodedPassword.passwordHash);
+                this.setDataValue("password_hash", encodedPassword.passwordHash);
+                this.setDataValue("password_salt", encodedPassword.salt);
             },
         },
         image_url: {
