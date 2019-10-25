@@ -9,6 +9,26 @@ async function registerNewUser(requestBody) {
     return errMsg;
 }
 
+async function getUserPublicInfo(query) {
+    let retObj;
+    await db.profile.findByPk(query.id).then( (user) => {
+        if(!user) {
+            retObj = Error.NO_SUCH_USER;
+        } else {
+            const values = user.dataValues;
+            retObj = {
+              username: values.username,
+              location: values.location,
+              contact: values.contact,
+              image_url: values.image_url,
+              role: values.role,
+            };
+        }
+    });
+    return retObj;
+}
+
 export default {
     registerNewUser,
+    getUserPublicInfo,
 }

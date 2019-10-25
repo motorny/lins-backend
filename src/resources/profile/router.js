@@ -16,13 +16,16 @@ const registerNewUser = async (request, response) => {
     response.status(200).send(resMsg);
 };
 
+const getUserInfo = async (request, response) => {
+  const { query } = request;
+  await validate(query, validationSchemas.getUserInfoValidationSchema);
+  const resMsg = await service.getUserPublicInfo(query);
+  response.status(200).send(resMsg);
+};
+
+router.get("/", handleErrorAsync(getUserInfo));
 router.post("/newuser", handleErrorAsync(registerNewUser));
 
 
-router.get("/", (request, response) => {
-    service.getAllUsers().then( (result) => {
-        response.send(JSON.stringify(result));
-    });
-});
 
 module.exports = router;
