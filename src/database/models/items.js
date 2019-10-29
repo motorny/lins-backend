@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
             storage_id: {
                 type: DataTypes.INTEGER,
                 foreignKey: true,
+                allowNull: false,
             },
             status: {
                 type: DataTypes.INTEGER,

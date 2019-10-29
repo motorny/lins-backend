@@ -7,6 +7,7 @@ import cors from 'cors';
 
 const versionRouter = require('./resources/version/router');
 const profileRouter = require('./resources/profile/router');
+const itemsRouter = require('./resources/items/router');
 // const usersRouter = require('./resources/users/router');
 
 const app = express();
@@ -21,6 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/version', versionRouter);
 app.use('/profile', profileRouter);
+app.use('/items', itemsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
