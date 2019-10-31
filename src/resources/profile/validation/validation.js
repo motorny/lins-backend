@@ -10,6 +10,11 @@ const registerNewUserValidationSchema = Joi.object().keys({
     points: Joi.string(),
 });
 
+const getUserInfoValidationSchema = Joi.object().keys({
+    id: Joi.number().integer().required(),
+});
+
 module.exports = {
-    registerNewUserValidationSchema
+    registerNewUserValidationSchema,
+    getUserInfoValidationSchema,
 };
