@@ -8,20 +8,28 @@ const router = express.Router();
 function handlePostAddNewItem(request, response) {
     const {body} = request;
     service.addNewItem(body).then((result) => {
-        response.send(
-            {"message": result}
-        );
+        response.send(result);
+    }).catch((err) => {
+        response.status(500).send({message: "Oooops! Internal server error"});
     });
 }
 
 function handleGetItems(request, response) {
-    const {body} = request;
     service.getItems().then((result) => {
         response.send(result);
     });
 }
 
+
+function handleGetItemById(request, response) {
+    const id = parseInt(request.params.id);
+    service.getItemById(id).then((result) => {
+        response.send(result);
+    });
+}
+
 router.post("/", handlePostAddNewItem);
+router.get("/:id", handleGetItemById);
 router.get("/", handleGetItems);
 
 module.exports = router;

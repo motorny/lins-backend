@@ -5,39 +5,52 @@ async function addNewItem(item) {
     // todo: decode and save image to FS
     item.status = 0; // todo: set default status here
     item.storage_id = 25; // todo: set appropriate storage_id (get it from user's token)
-    let errMsg = Error.CANNOT_INSERT_VALUE_INTO_TABLE;
-    await db.items.create(item).then(() => {
-        errMsg = Error.SUCCESS;
+    return db.items.create(item).then((createdItem) => {
+        return {
+            message: Error.SUCCESS,
+            id: createdItem.id
+        };
+    }).catch((err) => {
+        console.log(err);
+        return {message: "Failed to create new user in Database"};
     });
-    return errMsg;
 }
+
+const composeItemObjToSend = async (item) => {
+    // later it will be populated with requests to storage, status user and tags tables
+    return {
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        image_url: "http://127.0.0.1" + item.image,
+        status: item.status,
+        storage: {"this is": "storage object"},
+        user: {"this is": "user object"},
+        tags: [{tag: 1}, {tag: 2}]
+    }
+
+};
 
 
 async function getItems() {
-    let retObj;
-    await db.items.findAll().then((users) => {
-        const usersList = Array.from(users, (u) => {
-            return {
-                id: u.id,
-                name: u.name,
-                description: u.description,
-                image_url: "http://127.0.0.1" + u.image,
-                status: u.status,
-                storage: {"this is": "storage object"},
-                user: {"this is": "user object"},
-                tags: [{tag: 1}, {tag: 2}]
-            }
-        });
-        retObj = {
+    return db.items.findAll().then(async (items) => {
+        const usersList = await Promise.all(Array.from(items, composeItemObjToSend));
+        return {
             page: 1,
-            totalCnt: users.length,
+            totalCnt: items.length,
             items: usersList
         };
     });
-    return retObj;
 }
+
+async function getItemById(itemID) {
+    const item = await db.items.findByPk(itemID);
+    return composeItemObjToSend(item);
+}
+
 
 export default {
     addNewItem,
-    getItems
+    getItems,
+    getItemById
 }
