@@ -16,8 +16,10 @@
     "morgan": "~1.9.1",
     "pg": "^7.12.1",
     "sequelize": "^5.19.6",
+    "sequelize-cli": "^5.5.1",
     "sqlite3": "^4.1.0",
-    "es6-promisify": "latest"
+    "es6-promisify": "latest",
+    "joi": "^14.3.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.4",
@@ -25,8 +27,6 @@
     "@babel/node": "^7.6.3",
     "@babel/polyfill": "^7.6.0",
     "@babel/preset-env": "^7.6.3",
-    "joi": "^14.3.1",
-    "nodemon": "^1.19.4",
-    "sqlite": "^3.0.3"
+    "nodemon": "^1.19.4"
   }
 }

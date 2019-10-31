@@ -16,14 +16,3 @@ module.exports = {
     dialect: 'postgres',
   },
 };
-/* CREATE TABLE profile (
-    id            INTEGER PRIMARY KEY,
-    username      STRING,
-    password_hash STRING,
-    image_url     STRING,
-    location      STRING,
-    contact       STRING,
-    points        INTEGER DEFAULT (0),
-    createdAt     TIME,
-    updatedAt     TIME
-) */
