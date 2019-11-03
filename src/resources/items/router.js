@@ -28,8 +28,18 @@ function handleGetItemById(request, response) {
     });
 }
 
-router.post("/", handlePostAddNewItem);
+function handleChangeItemById(request, response) {
+    const id = parseInt(request.params.id);
+    const {body} = request;
+    service.changeItemById(id, body).then((result) => {
+        response.send(result);
+    });
+}
+
+
 router.get("/:id", handleGetItemById);
+router.put("/:id", handleChangeItemById);
+router.post("/", handlePostAddNewItem);
 router.get("/", handleGetItems);
 
 module.exports = router;

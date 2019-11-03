@@ -12,7 +12,7 @@ async function addNewItem(item) {
         };
     }).catch((err) => {
         console.log(err);
-        return {message: "Failed to create new user in Database"};
+        return {message: "Failed to create new item in Database"};
     });
 }
 
@@ -48,9 +48,32 @@ async function getItemById(itemID) {
     return composeItemObjToSend(item);
 }
 
+async function changeItemById(itemID, body) {
+    let item;
+    try {
+        item = await db.items.findByPk(itemID);
+    } catch (err) {
+        console.log('Failed to retrieve  item from DB', err); // todo: use logging
+        return { // todo: raise exception
+            message: "Item not found",
+            code: 400
+        }
+    }
+    return item.update(body, {fields: ['name', 'description', 'image']}).then(() => {
+        return composeItemObjToSend(item);
+    }).catch((err) => {
+        console.log(err);
+        return {
+            message: "Failed to update item",
+            code:400
+        };
+    });
+}
+
 
 export default {
     addNewItem,
     getItems,
-    getItemById
+    getItemById,
+    changeItemById
 }
