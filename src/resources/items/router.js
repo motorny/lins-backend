@@ -1,6 +1,6 @@
 import express from 'express';
 import service from './service';
-import { catchRejects, throwMethodNotAllowed } from '../../common/utils'
+import { handleErrorAsync, throwMethodNotAllowed } from '../../common/utils'
 
 import * as validationSchemas from './validation/validation';
 
@@ -38,12 +38,12 @@ async function handleChangeItemById(request, response) {
 }
 
 
-router.get("/:id", catchRejects(handleGetItemById));
-router.put("/:id", catchRejects(handleChangeItemById));
-router.delete("/:id", catchRejects(handleDeleteItemById));
+router.get("/:id", handleErrorAsync(handleGetItemById));
+router.put("/:id", handleErrorAsync(handleChangeItemById));
+router.delete("/:id", handleErrorAsync(handleDeleteItemById));
 router.all("/:id",throwMethodNotAllowed(['GET','PUT', 'DELETE']));
-router.post("/", catchRejects(handlePostAddNewItem));
-router.get("/", catchRejects(handleGetItems));
+router.post("/", handleErrorAsync(handlePostAddNewItem));
+router.get("/", handleErrorAsync(handleGetItems));
 router.all("/",throwMethodNotAllowed(['GET','POST']));
 
 module.exports = router;

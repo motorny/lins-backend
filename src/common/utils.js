@@ -6,16 +6,9 @@ function getVersion() {
 }
 
 const handleErrorAsync = func => (req, res, next) => {
-    func(req, res, next).catch((error) => next(error));
+    func(req, res, next).catch(next);
 };
 
-function catchRejects(fn) {
-    return function(req, res, next) {
-        // Make sure to `.catch()` any errors and pass them along to the `next()`
-        // middleware in the chain, in this case the error handler.
-        fn(req, res, next).catch(next);
-    };
-}
 
 function throwMethodNotAllowed(allowed_list) {
     return () => {
@@ -26,6 +19,5 @@ function throwMethodNotAllowed(allowed_list) {
 module.exports = {
     getVersion,
     handleErrorAsync,
-    catchRejects,
     throwMethodNotAllowed
 };

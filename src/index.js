@@ -5,10 +5,10 @@ import logger from 'morgan';
 import cors from 'cors';
 
 
-const versionRouter = require('./resources/version/router');
-const profileRouter = require('./resources/profile/router');
-const itemsRouter = require('./resources/items/router');
-const storageRouter = require('./resources/storage/router');
+import versionRouter from'./resources/version/router';
+import profileRouter from'./resources/profile/router';
+import itemsRouter  from'./resources/items/router';
+import storageRouter from'./resources/storage/router';
 // const usersRouter = require('./resources/users/router');
 
 const app = express();
