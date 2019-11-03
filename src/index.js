@@ -17,7 +17,7 @@ const app = express();
 app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
@@ -27,19 +27,28 @@ app.use('/items', itemsRouter);
 app.use('/storage', storageRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use(function (req, res, next) {
+    next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.json(res.locals.message);
+// Log error and stacktrace if it is 500
+// If it is production -> send only messages for 4xx errors
+// In development send all messages and stack trace (stack trace for 4xx is useless, so hide it)
+app.use(function (err, req, res, next) {
+    const status = err.status || 500;
+    res.status(status);
+    if (status >= 500) {
+        console.log(err);
+    }
+    if (req.app.get('env') === 'development') {
+        res.send({
+            message: err.message,
+            stack: status >= 500 ? err.stack : ''
+        });
+    } else {
+        res.send({message: status >= 500 ? 'Internal server error' : err.message});
+    }
 });
 
 module.exports = app;

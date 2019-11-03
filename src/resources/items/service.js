@@ -1,5 +1,5 @@
 import db from '../../database/models';
-import * as Error from '../../common/constants';
+import createError from 'http-errors'
 
 async function addNewItem(item) {
     // todo: decode and save image to FS
@@ -7,12 +7,9 @@ async function addNewItem(item) {
     item.storage_id = 25; // todo: set appropriate storage_id (get it from user's token)
     return db.items.create(item).then((createdItem) => {
         return {
-            message: Error.SUCCESS,
+            message: 'Success',
             id: createdItem.id
         };
-    }).catch((err) => {
-        console.log(err);
-        return {message: "Failed to create new item in Database"};
     });
 }
 
@@ -49,24 +46,25 @@ async function getItemById(itemID) {
 }
 
 async function changeItemById(itemID, body) {
-    let item;
-    try {
-        item = await db.items.findByPk(itemID);
-    } catch (err) {
-        console.log('Failed to retrieve  item from DB', err); // todo: use logging
-        return { // todo: raise exception
-            message: "Item not found",
-            code: 400
-        }
+    const item = await db.items.findByPk(itemID);
+    if (!item) {
+        throw createError(412, 'Item not found');
     }
     return item.update(body, {fields: ['name', 'description', 'image']}).then(() => {
         return composeItemObjToSend(item);
-    }).catch((err) => {
-        console.log(err);
+    });
+}
+
+async function deleteItemById(itemID) {
+    const item = await db.items.findByPk(itemID);
+    if (!item) {
+        throw createError(412, 'Item not found');
+    }
+
+    return item.destroy().then(() => {
         return {
-            message: "Failed to update item",
-            code:400
-        };
+            message: `Item (id: ${itemID}) successfully deleted!`
+        }
     });
 }
 
@@ -75,5 +73,6 @@ export default {
     addNewItem,
     getItems,
     getItemById,
-    changeItemById
+    changeItemById,
+    deleteItemById
 }

@@ -1,45 +1,49 @@
 import express from 'express';
 import service from './service';
+import { catchRejects, throwMethodNotAllowed } from '../../common/utils'
 
 import * as validationSchemas from './validation/validation';
 
 const router = express.Router();
 
-function handlePostAddNewItem(request, response) {
+async function handlePostAddNewItem(request, response) {
     const {body} = request;
-    service.addNewItem(body).then((result) => {
-        response.send(result);
-    }).catch((err) => {
-        response.status(500).send({message: "Oooops! Internal server error"});
-    });
+    const newItem = await service.addNewItem(body);
+    response.status(201).send(newItem);
 }
 
-function handleGetItems(request, response) {
-    service.getItems().then((result) => {
-        response.send(result);
-    });
+async function handleGetItems(request, response) {
+    const items = await service.getItems();
+    response.send(items);
 }
 
 
-function handleGetItemById(request, response) {
+async function handleGetItemById(request, response) {
     const id = parseInt(request.params.id);
-    service.getItemById(id).then((result) => {
-        response.send(result);
-    });
+    const result = await service.getItemById(id);
+    response.send(result);
 }
 
-function handleChangeItemById(request, response) {
+async function handleDeleteItemById(request, response) {
+    const id = parseInt(request.params.id);
+    const item = await service.deleteItemById(id);
+    response.send(item);
+}
+
+async function handleChangeItemById(request, response) {
     const id = parseInt(request.params.id);
     const {body} = request;
-    service.changeItemById(id, body).then((result) => {
-        response.send(result);
-    });
+    const changedItem = await service.changeItemById(id, body);
+    response.send(changedItem);
 }
 
 
-router.get("/:id", handleGetItemById);
-router.put("/:id", handleChangeItemById);
-router.post("/", handlePostAddNewItem);
-router.get("/", handleGetItems);
+router.get("/:id", catchRejects(handleGetItemById));
+router.put("/:id", catchRejects(handleChangeItemById));
+router.delete("/:id", catchRejects(handleDeleteItemById));
+router.all("/:id",throwMethodNotAllowed(['GET','PUT', 'DELETE']));
+router.post("/", catchRejects(handlePostAddNewItem));
+router.get("/", catchRejects(handleGetItems));
+router.all("/",throwMethodNotAllowed(['GET','POST']));
 
 module.exports = router;
