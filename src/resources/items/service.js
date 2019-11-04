@@ -1,11 +1,11 @@
-import db from '../../database/models';
+import Item from "../../database/models/items";
 import createError from 'http-errors'
 
 async function addNewItem(item) {
     // todo: decode and save image to FS
     item.status = 0; // todo: set default status here
-    item.storage_id = 25; // todo: set appropriate storage_id (get it from user's token)
-    return db.items.create(item).then((createdItem) => {
+    //item.storage_id = 1;
+    return Item.create(item).then((createdItem) => {
         return {
             message: 'Success',
             id: createdItem.id
@@ -30,7 +30,7 @@ const composeItemObjToSend = async (item) => {
 
 
 async function getItems() {
-    return db.items.findAll().then(async (items) => {
+    return Item.findAll().then(async (items) => {
         const usersList = await Promise.all(Array.from(items, composeItemObjToSend));
         return {
             page: 1,
@@ -41,12 +41,12 @@ async function getItems() {
 }
 
 async function getItemById(itemID) {
-    const item = await db.items.findByPk(itemID);
+    const item = await Item.findByPk(itemID);
     return composeItemObjToSend(item);
 }
 
 async function changeItemById(itemID, body) {
-    const item = await db.items.findByPk(itemID);
+    const item = await Item.findByPk(itemID);
     if (!item) {
         throw createError(412, 'Item not found');
     }
@@ -56,7 +56,7 @@ async function changeItemById(itemID, body) {
 }
 
 async function deleteItemById(itemID) {
-    const item = await db.items.findByPk(itemID);
+    const item = await Item.findByPk(itemID);
     if (!item) {
         throw createError(412, 'Item not found');
     }

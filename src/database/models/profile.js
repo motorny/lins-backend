@@ -29,8 +29,7 @@ const sha512 = function (password, salt) {
     };
 };
 
-module.exports = (sequelize, DataTypes) => {
-    const Profile = sequelize.define('profile', {
+const Profile = sequelize.define('profiles', {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
@@ -54,7 +53,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.VIRTUAL,
             set: function (val) {
                 this.setDataValue("password", val);
-                const salt = genRandomString(16); /** Gives us salt of length 16 */
+                const salt = genRandomString(16);
+                /** Gives us salt of length 16 */
                 const encodedPassword = sha512(val, salt);
                 this.setDataValue("password_hash", encodedPassword.passwordHash);
                 this.setDataValue("password_salt", encodedPassword.salt);
@@ -88,13 +88,14 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 0,
         }
     },
-        //Custom options
+    //Custom options
     {
         freezeTableName: true,
+        name: {
+            singular: 'profile',
+            plural: 'profiles',
+        },
         timestamps: true,
     });
-    Profile.associate = function(models) {
-        // associations can be defined here
-    };
-    return Profile;
-};
+
+export default Profile;

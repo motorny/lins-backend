@@ -1,9 +1,9 @@
-import db from '../../database/models';
+import Profile from "../../database/models/profile";
 import * as Error from '../../common/constants';
 
 async function registerNewUser(requestBody) {
     let errMsg = Error.CANNOT_INSERT_VALUE_INTO_TABLE;
-    await db.profile.create(requestBody).then( () => {
+    await Profile.create(requestBody).then( () => {
         errMsg = Error.SUCCESS;
     });
     return errMsg;
@@ -11,7 +11,7 @@ async function registerNewUser(requestBody) {
 
 async function getUserPublicInfo(query) {
     let retObj;
-    await db.profile.findByPk(query.id).then( (user) => {
+    await Profile.findByPk(query.id).then( (user) => {
         if(!user) {
             retObj = Error.NO_SUCH_USER;
         } else {
