@@ -1,8 +1,12 @@
 import Item from "../../database/models/items";
 import createError from 'http-errors'
+import {saveBase64ToImage} from "../../common/staticHandlers";
 
 async function addNewItem(item) {
-    // todo: decode and save image to FS
+    if (item.image){
+        // relative path to the saved image is returned
+        item.image = await saveBase64ToImage(item.image, 'items');
+    }
     item.status = 0; // todo: set default status here
     //item.storage_id = 1;
     return Item.create(item).then((createdItem) => {
@@ -19,7 +23,7 @@ const composeItemObjToSend = async (item) => {
         id: item.id,
         name: item.name,
         description: item.description,
-        image_url: "http://127.0.0.1" + item.image,
+        image_url: "http://127.0.0.1",
         status: item.status,
         storage: {"this is": "storage object"},
         user: {"this is": "user object"},
@@ -50,6 +54,11 @@ async function changeItemById(itemID, body) {
     if (!item) {
         throw createError(412, 'Item not found');
     }
+    if (body.image){
+        // relative path to the saved image is returned
+        body.image = await saveBase64ToImage(body.image, 'items');
+    }
+
     return item.update(body, {fields: ['name', 'description', 'image']}).then(() => {
         return composeItemObjToSend(item);
     });

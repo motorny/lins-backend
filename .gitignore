@@ -68,3 +68,6 @@ package-lock.json
 .idea
 
 .sqlite
+
+# user saved static files
+media

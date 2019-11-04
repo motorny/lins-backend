@@ -1,6 +1,8 @@
 'use strict';
 //Validations are automatically run on create, update and save. You can also call validate() to manually validate an instance.
 const crypto = require('crypto');
+import sequelizeBase from "./base";
+import Sequelize from 'sequelize';
 /**
  * generates random string of characters i.e salt
  * @function
@@ -29,15 +31,15 @@ const sha512 = function (password, salt) {
     };
 };
 
-const Profile = sequelize.define('profiles', {
+const Profile = sequelizeBase.define('profiles', {
         id: {
-            type: DataTypes.INTEGER,
+            type: Sequelize.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
         username: {
             //uniqie?
-            type: DataTypes.STRING,
+            type: Sequelize.STRING,
             allowNull: false,
             validate: {
                 notEmpty: true,
@@ -47,10 +49,10 @@ const Profile = sequelize.define('profiles', {
                 msg: 'This username is already existing. Choose something else'
             },
         },
-        password_hash: DataTypes.STRING,
-        password_salt: DataTypes.STRING,
+        password_hash: Sequelize.STRING,
+        password_salt: Sequelize.STRING,
         password: {
-            type: DataTypes.VIRTUAL,
+            type: Sequelize.VIRTUAL,
             set: function (val) {
                 this.setDataValue("password", val);
                 const salt = genRandomString(16);
@@ -61,30 +63,30 @@ const Profile = sequelize.define('profiles', {
             },
         },
         image_url: {
-            type: DataTypes.STRING,
+            type: Sequelize.STRING,
             validate: {
                 isUrl: true,
                 notEmpty: false,
             }
         },
         location: {
-            type: DataTypes.STRING,
+            type: Sequelize.STRING,
             validate: {
                 notEmpty: true,
             }
         },
         role: {
-            type: DataTypes.INTEGER,
+            type: Sequelize.INTEGER,
             foreignKey: true,
         },
         contact: {
-            type: DataTypes.STRING,
+            type: Sequelize.STRING,
             validate: {
                 notEmpty: true,
             }
         },
         points: {
-            type: DataTypes.INTEGER,
+            type: Sequelize.INTEGER,
             defaultValue: 0,
         }
     },

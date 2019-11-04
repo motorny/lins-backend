@@ -17,7 +17,6 @@ const User = sequelizeBase.define('users',{
         },
     },
     {
-        sequelize,
         name: {
             singular: 'user',
             plural: 'users',
