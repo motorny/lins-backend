@@ -1,4 +1,4 @@
-import Item from "../../database/models";
+import {Item, ItemStatus} from "../../database/models";
 import createError from 'http-errors'
 import {saveBase64ToImage} from "../../common/staticHandlers";
 
@@ -7,7 +7,8 @@ async function addNewItem(item) {
         // relative path to the saved image is returned
         item.image = await saveBase64ToImage(item.image, 'items');
     }
-    item.status = 0; // todo: set default status here
+    item.status = await ItemStatus.findOne({ where: {status: 'free'} }).get('id');
+    console.log(item.status);
     //item.storage_id = 1;
     return Item.create(item).then((createdItem) => {
         return {
