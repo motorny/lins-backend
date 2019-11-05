@@ -1,4 +1,4 @@
-import Profile from "../../database/models/profile";
+import Profile from "../../database/models";
 import * as Error from '../../common/constants';
 
 async function registerNewUser(requestBody) {

@@ -1,4 +1,4 @@
-import Item from "../../database/models/items";
+import Item from "../../database/models";
 import createError from 'http-errors'
 import {saveBase64ToImage} from "../../common/staticHandlers";
 

@@ -2,7 +2,7 @@ import Sequelize from 'sequelize';
 import sequelizeBase from "./base";
 
 import Storage from "./storage";
-
+import ItemStatus from "./itemStatuses";
 
 const Item = sequelizeBase.define('items',{
         name: {
@@ -18,10 +18,6 @@ const Item = sequelizeBase.define('items',{
         description: {
             type: Sequelize.TEXT,
         },
-        status: {
-            type: Sequelize.INTEGER,
-            allowNull: false
-        },
     },
     {
         name: {
@@ -32,4 +28,5 @@ const Item = sequelizeBase.define('items',{
     });
 
 Item.belongsTo(Storage, {foreignKey: 'storage_id'});
+Item.belongsTo(ItemStatus, {foreignKey: 'status'});
 export default Item;
