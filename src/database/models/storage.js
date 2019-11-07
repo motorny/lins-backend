@@ -1,30 +1,31 @@
-'use strict';
-module.exports = (sequelize, DataTypes) => {
-    const Storage = sequelize.define('storage', {
-            id: {
-                type: DataTypes.INTEGER,
-                autoIncrement: true,
-                primaryKey: true,
+import Sequelize from 'sequelize';
+import sequelizeBase from "./base";
+import User from "./user";
+
+
+const Storage = sequelizeBase.define('storages',{
+        name: {
+            type:Sequelize.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: true,
             },
-            name: {
-                type:DataTypes.STRING,
-            },
-            location: {
-                type:DataTypes.STRING
-            },
-            description: {
-                type:DataTypes.STRING
-            },
-            owner_id: {
-                type:DataTypes.INTEGER
-            }
         },
-        {
-            freezeTableName: true,
-            timestamps: true,
-        });
-    Storage.associate = function (models) {
-        // associations can be defined here
-    };
-    return Storage;
-};
+        location: {
+            type:Sequelize.STRING
+        },
+        description: {
+            type:Sequelize.STRING
+        },
+    },
+    {
+        name: {
+            singular: 'storage',
+            plural: 'storages',
+        },
+        modelName: 'storages',
+        freezeTableName: true
+    });
+
+Storage.belongsTo(User, {foreignKey: 'owner_id'});
+export default Storage;

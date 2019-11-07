@@ -1,7 +1,7 @@
-import db from '../../database/models';
+import Storage from "../../database/models";
 
 function addNewStorage(requestBody) {
-    db.storage.create(requestBody);
+    Storage.create(requestBody);
 }
 
 async function getOneStorage(query) {
