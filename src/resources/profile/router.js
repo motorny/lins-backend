@@ -24,7 +24,7 @@ const getUserInfo = async (request, response) => {
 };
 
 router.get("/", handleErrorAsync(getUserInfo));
-router.post("/newuser", handleErrorAsync(registerNewUser));
+router.post("/", handleErrorAsync(registerNewUser));
 
 
 
