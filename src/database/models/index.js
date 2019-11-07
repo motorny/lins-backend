@@ -1,5 +1,5 @@
 import Item from './items';
-import Storage from './storage';
+import Storage from './storages';
 import User from "./user";
 import ItemStatus from "./itemStatuses";
 

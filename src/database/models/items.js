@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 import sequelizeBase from "./base";
 
-import Storage from "./storage";
+import Storage from "./storages";
 import ItemStatus from "./itemStatuses";
 
 const Item = sequelizeBase.define('items',{
