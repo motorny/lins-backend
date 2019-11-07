@@ -5,10 +5,11 @@ import logger from 'morgan';
 import cors from 'cors';
 
 
-import versionRouter from'./resources/version/router';
-import profileRouter from'./resources/profile/router';
-import itemsRouter  from'./resources/items/router';
-import storageRouter from './resources/storages/router';
+import versionRouter from './resources/version/router';
+import profileRouter from './resources/profile/router';
+import itemsRouter  from './resources/items/router';
+import usersRouter from './resources/users/router';
+import storagesRouter from './resources/storages/router';
 // const usersRouter = require('./resources/users/router');
 
 const app = express();
@@ -24,7 +25,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/version', versionRouter);
 app.use('/profile', profileRouter);
 app.use('/items', itemsRouter);
-app.use('/storages', storageRouter);
+app.use('/storages', storagesRouter);
+app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
