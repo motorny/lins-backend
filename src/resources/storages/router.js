@@ -25,7 +25,7 @@ async function getOneStorage(request, response) {
 }
 
 async function getAllOwnerStorage(request, response) {
-    const owner_id = parseInt(request.body.owner_id);
+    const owner_id = parseInt(request.query.owner_id);
     const storage = await service.getAllOwnerStorage(owner_id);
     if(!storage)
     {
@@ -34,9 +34,17 @@ async function getAllOwnerStorage(request, response) {
     response.send(storage);
 }
 
+async function changeStorageById(request, response) {
+    const id = parseInt(request.params.id);
+    const {body} = request;
+    const changedStorage = await service.changeStorageById(id, body);
+    response.send(changedStorage);
+}
+
 router.post("/", handleErrorAsync(addNewStorage));
 router.get("/:id", handleErrorAsync(getOneStorage));
 router.get("/", handleErrorAsync(getAllOwnerStorage));
 router.all("/",throwMethodNotAllowed(['GET','POST']));
+router.put("/:id", handleErrorAsync(changeStorageById));
 
 module.exports = router;
