@@ -24,8 +24,19 @@ async function getOneStorage(request, response) {
     response.send(storage);
 }
 
+async function getAllOwnerStorage(request, response) {
+    const owner_id = parseInt(request.body.owner_id);
+    const storage = await service.getAllOwnerStorage(owner_id);
+    if(!storage)
+    {
+        throw createError(404, message.NO_SUCH_STORAGE);
+    }
+    response.send(storage);
+}
+
 router.post("/", handleErrorAsync(addNewStorage));
 router.get("/:id", handleErrorAsync(getOneStorage));
+router.get("/", handleErrorAsync(getAllOwnerStorage));
 router.all("/",throwMethodNotAllowed(['GET','POST']));
 
 module.exports = router;
