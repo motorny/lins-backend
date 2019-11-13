@@ -4,6 +4,7 @@ import User from "./users";
 import ItemStatus from "./itemStatuses";
 
 import sequelizeBase from "./base";
+import Comment from "./comments";
 
 
 function initDB () {
@@ -17,4 +18,4 @@ function initDB () {
 
 //initDB();
 
-export {Item, Storage, User, ItemStatus};
+export {Item, Storage, User, ItemStatus, Comment};
