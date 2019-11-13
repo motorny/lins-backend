@@ -1,4 +1,4 @@
-import {Storage} from "../../database/models";
+import {Item, Storage} from "../../database/models";
 import createError from "http-errors";
 
 async function addNewStorage(requestBody) {
@@ -31,9 +31,22 @@ async function changeStorageById(id, body) {
     });
 }
 
+async function deleteStorageById(id) {
+    const storage = await Storage.findByPk(id);
+    if (!storage) {
+        throw createError(412, 'Storage not found');
+    }
+    return storage.destroy().then(() => {
+        return {
+            message: `Storage (id: ${id}) successfully deleted!`
+        }
+    });
+}
+
 export default {
     addNewStorage,
     getOneStorage,
     getAllOwnerStorage,
-    changeStorageById
+    changeStorageById,
+    deleteStorageById
 }
