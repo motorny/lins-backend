@@ -1,5 +1,6 @@
 import { Profile, Storage, Item } from '../../database/models';
 import * as Error from '../../common/constants';
+import createError from 'http-errors'
 
 async function registerNewUser(requestBody) {
     let errMsg = Error.CANNOT_INSERT_VALUE_INTO_TABLE;
@@ -20,7 +21,7 @@ async function getUserPublicInfo(query) {
         }
     });
     /* Search for storage associated with given user */
-    await Storage.findOne({ where: {owner_id: query.id} }).then(storage => {
+    /* await Storage.findOne({ where: {owner_id: query.id} }).then(storage => {
         if(!storage) {
             throw Error.NO_STORAGE_ASSOCIATED;
         }
@@ -28,18 +29,39 @@ async function getUserPublicInfo(query) {
             const values = storage.dataValues;
             retObj = {...retObj, values };
         }
-    });
+    }); */
     /* Search for items associated with given storage */
-    await Item.findAll({ where: {storage_id: retObj.storage.id} }).then(items => {
+    /* await Item.findAll({ where: {storage_id: retObj.storage.id} }).then(items => {
         for(let i = 0; i < items.length; ++i) {
             const values = items[i].dataValues;
             retObj = {...retObj, values };
         }
-    });
+    }); */
     return retObj;
+}
+
+async function updateUserInfo(userInfo){
+
+    await Profile.update(
+        userInfo,
+        {where: {id: userInfo.id}}
+    );
+}
+
+async function deleteUser(requestParams) {
+    const { id } = requestParams;
+    const profileToDelete = await Profile.findByPk(id);
+    if (!profileToDelete) {
+        throw createError(412, 'Profile not found');
+    }
+    await profileToDelete.destroy().then(() => {
+        return Error.SUCCESS;
+    });
 }
 
 export default {
     registerNewUser,
     getUserPublicInfo,
+    updateUserInfo,
+    deleteUser,
 }
