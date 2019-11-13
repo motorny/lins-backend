@@ -1,13 +1,13 @@
-import {Item, ItemStatus} from "../../database/models";
+import {Item, ItemStatus, User, Storage} from "../../database/models";
 import createError from 'http-errors'
 import {saveBase64ToImage} from "../../common/staticHandlers";
 
 async function addNewItem(item) {
-    if (item.image){
+    if (item.image) {
         // relative path to the saved image is returned
         item.image = await saveBase64ToImage(item.image, 'items');
     }
-    item.status = await ItemStatus.findOne({ where: {status: 'free'} }).get('id');
+    item.status = await ItemStatus.findOne({where: {status: 'free'}}).get('id');
     console.log(item.status);
     //item.storage_id = 1;
     return Item.create(item).then((createdItem) => {
@@ -20,14 +20,19 @@ async function addNewItem(item) {
 
 const composeItemObjToSend = async (item) => {
     // later it will be populated with requests to storage, status user and tags tables
+    const storage = await item.getStorage({attributes: ['id', 'location', 'name', 'description', 'owner_id']});
+    let user = null;
+    if (storage) {
+        user = await storage.getUser({attributes: ['id','login']});
+    }
     return {
         id: item.id,
         name: item.name,
         description: item.description,
         image_url: "http://127.0.0.1",
         status: item.status,
-        storage: {"this is": "storage object"},
-        user: {"this is": "user object"},
+        storage: storage,
+        user: user,
         tags: [{tag: 1}, {tag: 2}]
     }
 
@@ -55,7 +60,7 @@ async function changeItemById(itemID, body) {
     if (!item) {
         throw createError(412, 'Item not found');
     }
-    if (body.image){
+    if (body.image) {
         // relative path to the saved image is returned
         body.image = await saveBase64ToImage(body.image, 'items');
     }

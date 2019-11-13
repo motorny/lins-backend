@@ -1,6 +1,6 @@
 import Item from './items';
-import Storage from './storage';
-import User from "./user";
+import Storage from './storages';
+import User from "./users";
 import ItemStatus from "./itemStatuses";
 import Profile from './profile';
 

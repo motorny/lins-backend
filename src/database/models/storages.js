@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
 import sequelizeBase from "./base";
-import User from "./user";
+import User from "./users";
 
 
 const Storage = sequelizeBase.define('storages',{
