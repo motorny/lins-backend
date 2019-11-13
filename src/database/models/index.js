@@ -4,4 +4,6 @@ import User from "./users";
 import ItemStatus from "./itemStatuses";
 import Profile from './profile';
 
-export {Item, Storage, User, ItemStatus, Profile};
+import sequelizeBase from "./base";
+
+export {Item, Storage, User, ItemStatus, Profile, sequelizeBase};
