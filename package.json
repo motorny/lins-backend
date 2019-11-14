@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start:dev": "nodemon --exec babel-node app.js"
+    "start:dev": "nodemon --exec babel-node app.js",
+    "initDB": "babel-node src/database/models/initDB.js"
   },
   "dependencies": {
     "body-parser": "latest",

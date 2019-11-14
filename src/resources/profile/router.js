@@ -17,14 +17,32 @@ const registerNewUser = async (request, response) => {
 };
 
 const getUserInfo = async (request, response) => {
-  const { query } = request;
-  await validate(query, validationSchemas.getUserInfoValidationSchema);
-  const resMsg = await service.getUserPublicInfo(query);
+  const { params } = request;
+  await validate(params, validationSchemas.getUserInfoValidationSchema);
+  const resMsg = await service.getUserPublicInfo(params);
   response.status(200).send(resMsg);
 };
 
-router.get("/", handleErrorAsync(getUserInfo));
-router.post("/newuser", handleErrorAsync(registerNewUser));
+const updateUserInfo = async (request, response) => {
+    const { params, body } = request;
+    const userInfo = {...params, ...body};
+    await validate(userInfo, validationSchemas.updateUserInfoValidationSchema);
+    const resMsg = await service.updateUserInfo(userInfo);
+    response.status(200).send(resMsg);
+};
+
+const deleteUser = async (request, response) => {
+    const { params } = request;
+    await validate(params, validationSchemas.deleteUserValidationSchema);
+    const resMsg = await service.deleteUser(params);
+    response.status(200).send(resMsg);
+};
+
+router.get("/:id", handleErrorAsync(getUserInfo));
+router.post("/", handleErrorAsync(registerNewUser));
+router.put("/:id", handleErrorAsync(updateUserInfo));
+router.delete("/:id", handleErrorAsync(deleteUser));
+
 
 
 
