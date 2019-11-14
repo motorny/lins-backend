@@ -12,7 +12,7 @@ const Comment = sequelizeBase.define('comments', {
                 notEmpty: true,
             },
         },
-        image: {
+        image_url: {
             type: Sequelize.STRING,
             allowNull: true,
 
@@ -30,6 +30,7 @@ const Comment = sequelizeBase.define('comments', {
         freezeTableName: true
     });
 
-Comment.belongsTo(Profile, {foreignKey: {name: 'owner_id', allowNull: false}});
+Comment.belongsTo(Profile, {foreignKey: {name: 'user_id', allowNull: false}});
 Comment.belongsTo(Item, {foreignKey: {name: 'item_id', allowNull: false}});
+
 export default Comment;
