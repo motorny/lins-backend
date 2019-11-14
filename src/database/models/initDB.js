@@ -1,3 +1,12 @@
-import {sequelizeBase} from "./index";
+import {sequelizeBase, ItemStatus} from "./index";
 
-sequelizeBase.sync({force: true});
+function initDB () {
+    sequelizeBase.sync({force: true}).then(() => {
+        ItemStatus.bulkCreate([
+            {status: "free"},
+            {status: "occupied"}
+        ]);
+    });
+}
+
+initDB();

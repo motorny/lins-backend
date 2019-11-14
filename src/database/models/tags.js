@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 import sequelizeBase from "./base";
 
-import Item from "./itemStatuses";
+import Item from "./items";
 
 const Tag = sequelizeBase.define('tags',{
         tag: {
@@ -10,6 +10,7 @@ const Tag = sequelizeBase.define('tags',{
             validate: {
                 notEmpty: true,
             },
+            unique: true
         },
     },
     {
@@ -21,5 +22,6 @@ const Tag = sequelizeBase.define('tags',{
         timestamps: false
     });
 
-Tag.belongsToMany(Item, {through: 'itemTagLink',timestamps: false,otherKey: 'itemId'});
+Tag.belongsToMany(Item, {through: 'itemTagLink',timestamps: false});
+Item.belongsToMany(Tag, {through: 'itemTagLink',timestamps: false});
 export default Tag;
