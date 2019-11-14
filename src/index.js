@@ -10,6 +10,7 @@ import profileRouter from './resources/profile/router';
 import itemsRouter  from './resources/items/router';
 import usersRouter from './resources/users/router';
 import storagesRouter from './resources/storages/router';
+import commentsRouter from './resources/comments/router';
 // const usersRouter = require('./resources/users/router');
 
 const app = express();
@@ -27,6 +28,7 @@ app.use('/profile', profileRouter);
 app.use('/items', itemsRouter);
 app.use('/storages', storagesRouter);
 app.use('/users', usersRouter);
+app.use('/comments', commentsRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
