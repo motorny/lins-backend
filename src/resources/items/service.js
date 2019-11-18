@@ -2,13 +2,14 @@ import {Item, ItemStatus, User, Storage} from "../../database/models";
 import createError from 'http-errors'
 import {saveBase64ToImage} from "../../common/staticHandlers";
 
-async function addNewItem(item) {
+async function addNewItem(item, user) {
     if (item.image) {
         // relative path to the saved image is returned
         item.image = await saveBase64ToImage(item.image, 'items');
     }
     item.status = await ItemStatus.findOne({where: {status: 'free'}}).get('id');
 
+    console.log(user);
 
     const createdItem = await Item.create(item);
 

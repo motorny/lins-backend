@@ -1,7 +1,10 @@
 import {User} from "../../database/models";
 import createError from 'http-errors'
+import bcrypt from 'bcrypt';
 
 async function addNewUser(user) {
+    user.password =  await bcrypt.hash(user.password, parseInt(process.env.PASSWORD_ROUNDS));
+
     return User.create(user).then((createdUser) => {
         return {
             message: 'Success',
