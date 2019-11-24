@@ -3,7 +3,7 @@ import createError from 'http-errors';
 
 import jwt from 'jsonwebtoken'
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 function generateAuthToken(user){
     return jwt.sign({id: user.id}, process.env.JWT_KEY,

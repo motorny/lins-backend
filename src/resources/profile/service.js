@@ -15,28 +15,28 @@ async function getUserPublicInfo(query) {
     /* Search for public information about user - location, username etc */
     await Profile.findByPk(query.id).then( (user) => {
         if(!user) {
-            throw Error.NO_SUCH_USER;
+            throw createError(400, Error.NO_SUCH_USER);
         } else {
             retObj = user.dataValues;
         }
     });
     /* Search for storage associated with given user */
-    /* await Storage.findOne({ where: {owner_id: query.id} }).then(storage => {
+    await Storage.findOne({ where: {owner_id: query.id} }).then(storage => {
         if(!storage) {
-            throw Error.NO_STORAGE_ASSOCIATED;
+            throw createError(400, Error.NO_STORAGE_ASSOCIATED);
         }
         else{
             const values = storage.dataValues;
-            retObj = {...retObj, values };
+            retObj = {...retObj, storage: values };
         }
-    }); */
+    });
     /* Search for items associated with given storage */
-    /* await Item.findAll({ where: {storage_id: retObj.storage.id} }).then(items => {
+    await Item.findAll({ where: {storage_id: retObj.storage.id} }).then(items => {
         for(let i = 0; i < items.length; ++i) {
             const values = items[i].dataValues;
             retObj = {...retObj, values };
         }
-    }); */
+    });
     return retObj;
 }
 
