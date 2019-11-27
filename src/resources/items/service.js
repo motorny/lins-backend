@@ -72,6 +72,12 @@ async function changeItemById(itemID, body, user) {
     if (!item) {
         throw createError(412, 'Item not found');
     }
+
+    const storage = await item.getStorage({attributes: ['owner_id']});
+    if(storage.owner_id !== user.id) {
+        throw createError(403, 'Permission denied');
+    }
+
     if (body.image) {
         // relative path to the saved image is returned
         body.image = await saveBase64ToImage(body.image, 'items');
@@ -86,6 +92,11 @@ async function deleteItemById(itemID, user) {
     const item = await Item.findByPk(itemID);
     if (!item) {
         throw createError(412, 'Item not found');
+    }
+
+    const storage = await item.getStorage({attributes: ['owner_id']});
+    if(storage.owner_id !== user.id) {
+        throw createError(403, 'Permission denied');
     }
 
     return item.destroy().then(() => {
