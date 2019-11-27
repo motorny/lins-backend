@@ -2,7 +2,9 @@ import express from 'express';
 import service from './service';
 import message from '../../common/constants.js';
 import { handleErrorAsync, throwMethodNotAllowed } from '../../common/utils'
+import validateSchema from './validation/validation';
 import createError from 'http-errors'
+import {checkJWT} from "../../common/auth";
 
 const router = express.Router();
 
@@ -47,11 +49,11 @@ async function deleteStorageById(request, response) {
     response.send(deletedStorage);
 }
 
-router.post("/", handleErrorAsync(addNewStorage));
+router.post("/", checkJWT, validateSchema('new-storage'), handleErrorAsync(addNewStorage));
 router.get("/:id", handleErrorAsync(getOneStorage));
 router.get("/", handleErrorAsync(getAllOwnerStorage));
 router.all("/",throwMethodNotAllowed(['GET','POST']));
-router.put("/:id", handleErrorAsync(changeStorageById));
+router.put("/:id", checkJWT, validateSchema('change-storage'), handleErrorAsync(changeStorageById));
 router.delete("/:id", handleErrorAsync(deleteStorageById));
 
 module.exports = router;
