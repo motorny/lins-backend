@@ -67,7 +67,7 @@ async function getItemById(itemID) {
     return composeItemObjToSend(item);
 }
 
-async function changeItemById(itemID, body) {
+async function changeItemById(itemID, body, user) {
     const item = await Item.findByPk(itemID);
     if (!item) {
         throw createError(412, 'Item not found');
@@ -82,7 +82,7 @@ async function changeItemById(itemID, body) {
     });
 }
 
-async function deleteItemById(itemID) {
+async function deleteItemById(itemID, user) {
     const item = await Item.findByPk(itemID);
     if (!item) {
         throw createError(412, 'Item not found');

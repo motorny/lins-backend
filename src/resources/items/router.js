@@ -27,21 +27,21 @@ async function handleGetItemById(request, response) {
 
 async function handleDeleteItemById(request, response) {
     const id = parseInt(request.params.id);
-    const item = await service.deleteItemById(id);
+    const item = await service.deleteItemById(id, request.user);
     response.send(item);
 }
 
 async function handleChangeItemById(request, response) {
     const id = parseInt(request.params.id);
     const {body} = request;
-    const changedItem = await service.changeItemById(id, body);
+    const changedItem = await service.changeItemById(id, body,request.user);
     response.send(changedItem);
 }
 
 
 router.get("/:id", handleErrorAsync(handleGetItemById));
-router.put("/:id", handleErrorAsync(handleChangeItemById));
-router.delete("/:id", handleErrorAsync(handleDeleteItemById));
+router.put("/:id",checkJWT, validateSchema('change-item'), handleErrorAsync(handleChangeItemById));
+router.delete("/:id", checkJWT, handleErrorAsync(handleDeleteItemById));
 router.all("/:id", throwMethodNotAllowed(['GET', 'PUT', 'DELETE']));
 router.post("/", checkJWT, validateSchema('new-item'), handleErrorAsync(handlePostAddNewItem));
 router.get("/", handleErrorAsync(handleGetItems));
