@@ -1,0 +1,47 @@
+{
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "username": {
+      "title": "UserName",
+      "type": "string",
+      "description": "User's Name",
+      "example": "John Doe"
+    },
+    "image_url": {
+      "title": "Profile's image",
+      "description": "base64 encoded image",
+      "type": "string"
+    },
+    "location": {
+      "title": "Location",
+      "type": "string",
+      "description": "Location where you can find user",
+      "example": "Avellaneda avenue, building 3, floor 1, room 3"
+    },
+    "role": {
+      "title": "Role",
+      "type": "string",
+      "description": "Admin/User role",
+      "example": "admin"
+    },
+    "contact": {
+      "title": "Contact",
+      "type": "string",
+      "description": "Contact to user",
+      "example": "+7-932-678-901-234"
+    },
+    "points": {
+      "title": "Points",
+      "type": "integer",
+      "description": "Rating system",
+      "example": "11"
+    },
+    "user_id": {
+      "title": "User id",
+      "type": "integer",
+      "description": "Id of the user the profile will be assigned to"
+    }
+  },
+  "required": ["username", "role", "location", "contact", "user_id"]
+}

@@ -6,7 +6,7 @@
       "title": "Name",
       "type": "string",
       "description": "Item name",
-      "exampe": "HDMI connector"
+      "example": "HDMI connector"
     },
     "image": {
       "title": "Item's image",
@@ -22,7 +22,7 @@
     "storage_id": {
       "title": "Storage id",
       "type": "integer",
-      "description": "Id of the storage the item will be asigned to."
+      "description": "Id of the storage the item will be assigned to."
     }
   },
   "required": ["name"]

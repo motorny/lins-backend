@@ -1,38 +1,12 @@
-const Joi = require('joi');
+import createSchemaValidator from "../../../common/validation";
+const Ajv = require('ajv');
+const ajv = new Ajv({allErrors: true});
 
-const registerNewUserValidationSchema = Joi.object().keys({
-    username: Joi.string().required(),
-    password: Joi.string().required(),
-    image_url: Joi.string(),
-    location: Joi.string().required(),
-    role: Joi.number().integer(),
-    contact: Joi.string().required(),
-    points: Joi.string(),
-});
+const newItemSchema = require('./newProfileSchema.json');
+const changeItemSchema = require('./changeProfileSchema.json');
 
-const getUserInfoValidationSchema = Joi.object().keys({
-    id: Joi.number().integer().required(),
-});
+ajv.addSchema(newItemSchema, 'new-profile');
+ajv.addSchema(changeItemSchema, 'change-profile');
 
-const deleteUserValidationSchema = Joi.object().keys({
-    id: Joi.number().integer().required(),
-});
-
-
-const updateUserInfoValidationSchema = Joi.object().keys({
-    id: Joi.number().integer().required(),
-    username: Joi.string(),
-    password: Joi.string(),
-    image_url: Joi.string(),
-    location: Joi.string(),
-    role: Joi.number().integer(),
-    contact: Joi.string(),
-    points: Joi.string(),
-});
-
-module.exports = {
-    registerNewUserValidationSchema,
-    getUserInfoValidationSchema,
-    updateUserInfoValidationSchema,
-    deleteUserValidationSchema,
-};
+const validateSchema = createSchemaValidator(ajv);
+export default validateSchema;
