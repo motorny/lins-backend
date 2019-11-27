@@ -3,7 +3,7 @@ import service from './service';
 import {handleErrorAsync, throwMethodNotAllowed} from '../../common/utils'
 import {checkJWT} from "../../common/auth";
 
-import * as validationSchemas from './validation/validation';
+import validateSchema from './validation/validation';
 
 const router = express.Router();
 
@@ -43,7 +43,7 @@ router.get("/:id", handleErrorAsync(handleGetItemById));
 router.put("/:id", handleErrorAsync(handleChangeItemById));
 router.delete("/:id", handleErrorAsync(handleDeleteItemById));
 router.all("/:id", throwMethodNotAllowed(['GET', 'PUT', 'DELETE']));
-router.post("/", checkJWT, handleErrorAsync(handlePostAddNewItem));
+router.post("/", checkJWT, validateSchema('new-item'), handleErrorAsync(handlePostAddNewItem));
 router.get("/", handleErrorAsync(handleGetItems));
 router.all("/", throwMethodNotAllowed(['GET', 'POST']));
 

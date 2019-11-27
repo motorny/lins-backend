@@ -8,6 +8,7 @@
     "seedDB": "npx sequelize-cli db:seed:all"
   },
   "dependencies": {
+    "ajv": "^6.10.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "latest",
     "cookie-parser": "~1.4.4",

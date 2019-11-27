@@ -11,7 +11,6 @@ async function addNewTag(tag) {
 }
 
 const getLinkedCount = async (tag) => {
-    // later it will be populated with requests to storage, status user and tags tables
     const linked_cnt = await tag.countItems();
 
     return {
