@@ -17,6 +17,11 @@ const Storage = sequelizeBase.define('storages',{
         description: {
             type:Sequelize.STRING
         },
+        primary: {
+            type: Sequelize.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
+        }
     },
     {
         name: {

@@ -19,6 +19,7 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
       owner_id: '1',
+      primary: true,
     },
       {
         name: 'Lins private locker',
@@ -27,6 +28,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         owner_id: '2',
+        primary: true,
       },
       {
         name: 'waitress locker',
@@ -35,6 +37,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         owner_id: '3',
+        primary: true,
       },
       {
         name: 'plane locker',
@@ -43,6 +46,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         owner_id: '4',
+        primary: true,
       },
       {
         name: 'elons locker',
@@ -51,6 +55,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         owner_id: '5',
+        primary: true,
       },
       {
         name: 'another one',
@@ -59,6 +64,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         owner_id: '6',
+        primary: true,
       },
       {
         name: '...and another one',
@@ -67,6 +73,7 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         owner_id: '7',
+        primary: true,
       }], {});
   },
 

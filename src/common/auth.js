@@ -7,10 +7,15 @@ export const checkJWT = async (req, res, next) => {
         const token = req.header('Authorization').replace('Bearer ', '');
         const data = jwt.verify(token, process.env.JWT_KEY);
 
-        req.user = await User.findOne({where: {id: data.id}});
+        const user = await User.findOne({where: {id: data.id}});
+        if(!user) {
+            throw Error();
+        }
+        req.user = user;
         req.tokenData = data;
         next()
     } catch (error) {
+        console.log(error);
         res.status(403).send({message: 'Not Authorized'});
     }
 };

@@ -23,6 +23,11 @@
       "title": "Storage id",
       "type": "integer",
       "description": "Id of the storage the item will be assigned to. If not passed, the item will be assigned to the default user's storage"
+    },
+    "tag_ids" : {
+      "title": "Storage id",
+      "type": "array",
+      "description": "Id of the storage the item will be assigned to. If not passed, the item will be assigned to the default user's storage"
     }
   },
   "required": ["name"]
