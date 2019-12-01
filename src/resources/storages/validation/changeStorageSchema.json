@@ -24,6 +24,5 @@
       "type": "integer",
       "description": "Id of the owner"
     }
-  },
-  "required": ["name", "location"]
+  }
 }

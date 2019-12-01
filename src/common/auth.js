@@ -30,7 +30,6 @@ export const checkJWTAdmin = async (req, res, next) => {
         if(!user || !user.isAdmin) {
             throw Error();
         }
-        console.log(user.isAdmin);
         req.user = user;
         req.tokenData = data;
         next()

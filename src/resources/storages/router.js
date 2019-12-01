@@ -4,14 +4,12 @@ import message from '../../common/constants.js';
 import { handleErrorAsync, throwMethodNotAllowed } from '../../common/utils'
 import validateSchema from './validation/validation';
 import createError from 'http-errors'
-import {checkJWT} from "../../common/auth";
-import {checkJWTAdmin} from "../../common/auth";
+import {checkJWT, checkJWTAdmin} from "../../common/auth";
 
 const router = express.Router();
 
 
 async function addNewStorage(request, response) {
-    // validate(body);
     const {body} = request;
     const newStorage = await service.addNewStorage(body);
     response.status(201).send(newStorage);
@@ -29,6 +27,9 @@ async function getOneStorage(request, response) {
 
 async function getAllOwnerStorage(request, response) {
     const owner_id = parseInt(request.query.owner_id);
+    if(!owner_id) {
+        throw createError(400, "Invalid query parameters");
+    }
     const storage = await service.getAllOwnerStorage(owner_id);
     if(!storage)
     {
@@ -39,7 +40,7 @@ async function getAllOwnerStorage(request, response) {
 
 async function changeStorageById(request, response) {
     const id = parseInt(request.params.id);
-    const changedStorage = await service.changeStorageById(id, request.body);
+    const changedStorage = await service.changeStorageById(id, request.body, request.user);
     response.send(changedStorage);
 }
 
@@ -50,11 +51,12 @@ async function deleteStorageById(request, response) {
     response.send(deletedStorage);
 }
 
-router.post("/", checkJWTAdmin, validateSchema('new-storage'), handleErrorAsync(addNewStorage));
 router.get("/:id", handleErrorAsync(getOneStorage));
-router.get("/", handleErrorAsync(getAllOwnerStorage));
-router.all("/",throwMethodNotAllowed(['GET','POST']));
-router.put("/:id", checkJWTAdmin, validateSchema('change-storage'), handleErrorAsync(changeStorageById));
+router.put("/:id", checkJWT, validateSchema('change-storage'), handleErrorAsync(changeStorageById));
 router.delete("/:id", checkJWTAdmin, handleErrorAsync(deleteStorageById));
+router.all("/:id",throwMethodNotAllowed(['GET','PUT', 'DELETE']));
+router.get("/", handleErrorAsync(getAllOwnerStorage));
+router.post("/", checkJWTAdmin, validateSchema('new-storage'), handleErrorAsync(addNewStorage));
+router.all("/",throwMethodNotAllowed(['GET','POST']));
 
 module.exports = router;

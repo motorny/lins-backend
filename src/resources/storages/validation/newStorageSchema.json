@@ -25,5 +25,5 @@
       "description": "Id of the owner"
     }
   },
-  "required": ["name", "location"]
+  "required": ["name", "location", "owner_id"]
 }
