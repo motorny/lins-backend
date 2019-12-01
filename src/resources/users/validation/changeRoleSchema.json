@@ -8,5 +8,6 @@
       "example": false
     }
   },
+  "additionalProperties": false,
   "required": ["isAdmin"]
 }

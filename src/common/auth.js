@@ -3,6 +3,7 @@ import {User} from '../database/models'
 import logger from "./logger";
 
 async function getTokenFromRequest(req) {
+    let user, data;
     try {
         const tokenHeader = req.header('Authorization');
         if (!tokenHeader) {
@@ -10,9 +11,9 @@ async function getTokenFromRequest(req) {
         }
 
         const token = tokenHeader.replace('Bearer ', '');
-        const data = jwt.verify(token, process.env.JWT_KEY);
+        data = jwt.verify(token, process.env.JWT_KEY);
 
-        const user = await User.findOne({where: {id: data.id}});
+        user = await User.findOne({where: {id: data.id}});
         if (!user) {
             throw Error('User not found in DB');
         }

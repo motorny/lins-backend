@@ -14,5 +14,6 @@
       "type": "string"
     }
   },
+  "additionalProperties": false,
   "required": ["login", "password"]
 }
