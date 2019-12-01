@@ -4,7 +4,6 @@ import path from 'path';
 import logger from 'morgan';
 import cors from 'cors';
 
-
 import versionRouter from './resources/version/router';
 import profileRouter from './resources/profile/router';
 import itemsRouter  from './resources/items/router';
