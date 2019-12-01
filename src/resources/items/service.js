@@ -126,7 +126,7 @@ async function changeItemById(itemID, body, user) {
             storage.owner_id !== user.id) {
             // check the user is assigning to it's own storage
             // if he is not an admin
-            createError(403, 'Permission denied');
+            throw createError(403, 'Permission denied');
         }
     }
 
@@ -151,7 +151,9 @@ async function deleteItemById(itemID, user) {
     }
 
     const storage = await item.getStorage({attributes: ['owner_id']});
-    if (storage.owner_id !== user.id) {
+    if (!user.isAdmin &&
+        storage.owner_id !== user.id) {
+        // Can not delete not owned item, if not Admin
         throw createError(403, 'Permission denied');
     }
 
