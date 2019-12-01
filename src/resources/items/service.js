@@ -10,8 +10,10 @@ async function userDefaultStorage(user) {
     const storage = await Storage.findOne({where: {owner_id: user.id, primary: true}});
 
     if (storage) {
+        logger.debug(`User ${user.login} already has primary storage`);
         return storage;
     }
+    logger.info(`Creating primary storage for user ${user.login}`);
     return Storage.create({
         name: "My storage",
         primary: true,
@@ -24,15 +26,17 @@ async function addNewItem(item, user) {
     if (item.image) {
         // relative path to the saved image is returned
         item.image = await saveBase64ToImage(item.image, 'items');
+        logger.debug(`Image saved to media storage: ${item.image}`);
     }
     item.status = await ItemStatus.findOne({where: {status: 'free'}}).get('id');
 
+    let storage;
     if (!item.storage_id) {
-        const storage = await userDefaultStorage(user);
+        storage = await userDefaultStorage(user);
         item.storage_id = storage.id;
     } else {
-        // validate it is his own storage
-        const storage = await Storage.findByPk(item.storage_id);
+        // validate if it is his own storage
+        storage = await Storage.findByPk(item.storage_id);
         if (!storage)
             createError(400, 'Invalid storage ID');
         if (!user.isAdmin &&
@@ -42,11 +46,10 @@ async function addNewItem(item, user) {
             createError(403, 'Permission denied');
         }
     }
-
-
     const createdItem = await Item.create(item);
-
+    logger.info(`Creating item ${item.name} in the storage ${storage.name} (id: ${storage.id})`);
     if (item.tag_ids) {
+        logger.info(`Assiging tags ${item.tag_ids}`);
         await createdItem.setTags(item.tag_ids)
     }
 
@@ -85,12 +88,10 @@ const composeItemObjToSend = async (item) => {
 async function getItems() {
     return Item.findAll().then(async (items) => {
         let itemsList = [];
-        logger.debug(`got ${itemsList.length} items`);
+        logger.debug(`Got ${itemsList.length} items`);
         if (items) {
             itemsList = await Promise.all(Array.from(items, composeItemObjToSend));
         }
-        logger.info('Items list composed');
-        logger.error('Hehe error');
         return {
             page: 1,
             totalCnt: itemsList.length,
@@ -102,6 +103,7 @@ async function getItems() {
 async function getItemById(itemID) {
     const item = await Item.findByPk(itemID);
     if (!item) {
+        logger.debug(`Item with id ${itemID} not found`);
         throw createError(412, 'Item not found');
     }
     return composeItemObjToSend(item);
@@ -110,22 +112,27 @@ async function getItemById(itemID) {
 async function changeItemById(itemID, body, user) {
     const item = await Item.findByPk(itemID);
     if (!item) {
+        logger.debug(`Item with id ${itemID} not found`);
         throw createError(412, 'Item not found');
     }
 
-    const storage = await item.getStorage({attributes: ['owner_id']});
-    if (storage.owner_id !== user.id) {
+    const storage = await item.getStorage();
+    if (!user.isAdmin && storage.owner_id !== user.id) {
+        logger.debug(`Item ${item.name} (id: ${item.id}) is not owned by non-admin ${user.login}`);
         throw createError(403, 'Permission denied');
     }
 
     if (body.storage_id) {
         const storage = await Storage.findByPk(item.storage_id);
-        if (!storage)
+        if (!storage) {
+            logger.debug(`Storage with id ${body.storage_id} not found`);
             createError(400, 'Invalid storage ID');
+        }
         if (!user.isAdmin &&
             storage.owner_id !== user.id) {
             // check the user is assigning to it's own storage
             // if he is not an admin
+            logger.debug(`Storage ${storage.name} (id: ${storage.id}) is not owned by non-admin ${user.login}`);
             throw createError(403, 'Permission denied');
         }
     }
@@ -133,11 +140,14 @@ async function changeItemById(itemID, body, user) {
     if (body.image) {
         // relative path to the saved image is returned
         body.image = await saveBase64ToImage(body.image, 'items');
+        logger.debug(`Image saved to media storage: ${item.image}`);
     }
 
+    logger.info(`Updating item ${item.name} (id: ${item.id}) with values ${body}`);
     await item.update(body, {fields: ['name', 'description', 'image', 'storage_id']});
 
     if (body.tag_ids) {
+        logger.info(`Assiging tags ${body.tag_ids}`);
         await item.setTags(body.tag_ids);
     }
 
@@ -147,6 +157,7 @@ async function changeItemById(itemID, body, user) {
 async function deleteItemById(itemID, user) {
     const item = await Item.findByPk(itemID);
     if (!item) {
+        logger.debug(`Item with id ${itemID} not found`);
         throw createError(412, 'Item not found');
     }
 
@@ -154,12 +165,14 @@ async function deleteItemById(itemID, user) {
     if (!user.isAdmin &&
         storage.owner_id !== user.id) {
         // Can not delete not owned item, if not Admin
+        logger.debug(`Item ${item.name} (id: ${item.id}) is not owned by non-admin ${user.login}`);
         throw createError(403, 'Permission denied');
     }
 
     return item.destroy().then(() => {
+        logger.info(`Item (id: ${itemID}) successfully deleted!`);
         return {
-            message: `Item (id: ${itemID}) successfully deleted!`
+            message: `Success`
         }
     });
 }

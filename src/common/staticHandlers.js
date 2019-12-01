@@ -11,11 +11,16 @@ export async function saveBase64ToImage(str, relPath) {
         throw new createError(415, 'Bad image');
     }
     const imagePath = path.format({
-        dir: path.join('media', relPath), //todo: Include media prefix from app config
+        dir: path.join(process.env.MEDIA_PATH, relPath),
         name: uuid4(),
         ext: '.' + ext
     });
     await fs.mkdir(path.dirname(imagePath),{recursive:true});
     await fs.writeFile(imagePath, buff);
     return imagePath;
+}
+
+
+export function getMediaUrl(relPath) {
+
 }

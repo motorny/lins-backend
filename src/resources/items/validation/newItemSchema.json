@@ -30,5 +30,6 @@
       "description": "Id of the storage the item will be assigned to. If not passed, the item will be assigned to the default user's storage"
     }
   },
+  "additionalProperties": false,
   "required": ["name"]
 }

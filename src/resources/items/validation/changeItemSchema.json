@@ -25,10 +25,10 @@
       "description": "Id of the storage the item will be assigned to."
     },
     "tag_ids" : {
-      "title": "Storage id",
+      "title": "Tags id",
       "type": "array",
-      "description": "Id of the storage the item will be assigned to. If not passed, the item will be assigned to the default user's storage"
+      "description": "Ids of the Tags for this item"
     }
   },
-  "required": ["name"]
+  "additionalProperties": false
 }

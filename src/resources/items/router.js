@@ -3,7 +3,7 @@ import service from './service';
 import {handleErrorAsync, throwMethodNotAllowed} from '../../common/utils'
 import {checkJWT} from "../../common/auth";
 
-import validateSchema from './validation/validation';
+import validateSchema from './validation';
 
 const router = express.Router();
 
