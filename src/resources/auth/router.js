@@ -12,7 +12,10 @@ async function handlePostAcquireToken(request, response) {
 }
 
 async function handleGetTokenInfo(request, response) {
-    response.status(200).send(request.tokenData);
+    response.status(200).send({
+        ...request.tokenData,
+        isAdmin: request.user.isAdmin
+    });
 }
 
 

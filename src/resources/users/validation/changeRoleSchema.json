@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "isAdmin": {
+      "title": "New admin status",
+      "type": "boolean",
+      "example": false
+    }
+  },
+  "required": ["isAdmin"]
+}
