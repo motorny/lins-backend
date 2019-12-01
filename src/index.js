@@ -1,7 +1,8 @@
 import createError from 'http-errors'
 import express from 'express';
 import path from 'path';
-import logger from 'morgan';
+import morgan from 'morgan';
+import logger from "./common/logger";
 import cors from 'cors';
 
 
@@ -18,7 +19,7 @@ const app = express();
 
 
 app.use(cors());
-app.use(logger('dev'));
+app.use(morgan('short', { stream: logger.stream }));
 app.use(express.json({limit: '10mb'}));
 app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));

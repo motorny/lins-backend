@@ -26,7 +26,8 @@
     "sequelize": "^5.19.6",
     "sequelize-cli": "^5.5.1",
     "sqlite3": "^4.1.0",
-    "uuid4": "latest"
+    "uuid4": "latest",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.4",

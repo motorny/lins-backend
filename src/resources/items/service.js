@@ -1,7 +1,7 @@
 import {Item, ItemStatus, User, Storage} from "../../database/models";
 import createError from 'http-errors'
 import {saveBase64ToImage} from "../../common/staticHandlers";
-
+import logger from "../../common/logger";
 
 async function userDefaultStorage(user) {
     // returns user's default(first) storage
@@ -85,9 +85,12 @@ const composeItemObjToSend = async (item) => {
 async function getItems() {
     return Item.findAll().then(async (items) => {
         let itemsList = [];
+        logger.debug(`got ${itemsList.length} items`);
         if (items) {
             itemsList = await Promise.all(Array.from(items, composeItemObjToSend));
         }
+        logger.info('Items list composed');
+        logger.error('Hehe error');
         return {
             page: 1,
             totalCnt: itemsList.length,
