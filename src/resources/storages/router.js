@@ -2,7 +2,7 @@ import express from 'express';
 import service from './service';
 import message from '../../common/constants.js';
 import { handleErrorAsync, throwMethodNotAllowed } from '../../common/utils'
-import validateSchema from './validation/validation';
+import validateSchema from './validation';
 import createError from 'http-errors'
 import {checkJWT, checkJWTAdmin} from "../../common/auth";
 

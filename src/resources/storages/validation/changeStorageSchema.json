@@ -24,5 +24,6 @@
       "type": "integer",
       "description": "Id of the owner"
     }
-  }
+  },
+  "additionalProperties": false
 }
