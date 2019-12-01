@@ -2,7 +2,8 @@ import express from 'express';
 import service from './service';
 import { handleErrorAsync, throwMethodNotAllowed } from '../../common/utils'
 
-import * as validationSchemas from './validation/validation';
+import validateSchema from "./validation";
+import {checkJWT} from "../../common/auth";
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ async function handleGetTagsAndStats(request, response) {
 }
 
 router.get("/", handleErrorAsync(handleGetTagsAndStats));
-router.post("/", handleErrorAsync(handlePostAddNewTag));
+router.post("/", checkJWT, validateSchema('new-tag'), handleErrorAsync(handlePostAddNewTag));
 router.all("/",throwMethodNotAllowed(['GET','POST']));
 
 module.exports = router;

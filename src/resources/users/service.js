@@ -2,6 +2,7 @@ import {User, Profile} from "../../database/models";
 import createError from 'http-errors'
 import bcrypt from 'bcryptjs';
 import logger from "../../common/logger";
+import Sequelize from "sequelize";
 
 async function createEmptyProfile(forUser) {
     const emptyProfile = {
@@ -20,7 +21,14 @@ async function addNewUser(userData) {
 
     userData.password = await bcrypt.hash(userData.password, parseInt(process.env.PASSWORD_ROUNDS));
 
-    const createdUser = await User.create(userData);
+    const createdUser = await User.create(userData).catch((err) => {
+        if (err instanceof Sequelize.UniqueConstraintError) {
+            logger.info(`User ${userData.login} already exists`);
+            throw createError(409, `Already exists`)
+        } else {
+            throw err;
+        }
+    });
     logger.info(`User ${createdUser.login} created. ID: ${createdUser.id}`);
     await createEmptyProfile(createdUser);
     return {
