@@ -5,7 +5,6 @@ import morgan from 'morgan';
 import logger from "./common/logger";
 import cors from 'cors';
 
-
 import versionRouter from './resources/version/router';
 import profileRouter from './resources/profile/router';
 import itemsRouter  from './resources/items/router';

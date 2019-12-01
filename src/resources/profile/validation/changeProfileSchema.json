@@ -42,6 +42,5 @@
       "type": "integer",
       "description": "Id of the user the profile will be assigned to"
     }
-  },
-  "required": ["user_id"]
+  }
 }

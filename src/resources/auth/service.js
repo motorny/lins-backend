@@ -1,7 +1,7 @@
 import {User} from "../../database/models";
 import createError from 'http-errors';
 
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
 
 const bcrypt = require('bcryptjs');
 

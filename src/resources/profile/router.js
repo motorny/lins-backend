@@ -1,8 +1,5 @@
 import express from 'express';
 import service from './service';
-import Joi from 'joi';
-import * as validationSchemas from './validation/validation';
-import { promisify } from 'es6-promisify';
 const { handleErrorAsync } = require('../../common/utils');
 import {checkJWT} from "../../common/auth";
 import {throwMethodNotAllowed} from "../../common/utils";
@@ -23,15 +20,15 @@ const getUserInfo = async (request, response) => {
 };
 
 const updateUserInfo = async (request, response) => {
-    const { params, body } = request;
-    const userInfo = {...params, ...body};
+    const { params, user, body } = request;
+    const userInfo = {...params, ...body, currentUser: user.id};
     const resMsg = await service.updateUserInfo(userInfo);
     response.status(200).send(resMsg);
 };
 
 const deleteUser = async (request, response) => {
-    const { params } = request;
-    const resMsg = await service.deleteUser(params);
+    const { params, user } = request;
+    const resMsg = await service.deleteUser({...params, currentUser: user.id});
     response.status(200).send(resMsg);
 };
 
@@ -39,8 +36,8 @@ router.get("/:id", handleErrorAsync(getUserInfo));
 router.put("/:id", checkJWT, validateSchema('change-profile'), handleErrorAsync(updateUserInfo));
 router.delete("/:id", checkJWT, handleErrorAsync(deleteUser));
 router.all("/:id", throwMethodNotAllowed(['GET', 'PUT', 'DELETE']));
-router.post("/", checkJWT, validateSchema('new-profile'), handleErrorAsync(registerNewUser));
-router.all("/", throwMethodNotAllowed(['GET', 'POST']));
+//router.post("/", checkJWT, validateSchema('new-profile'), handleErrorAsync(registerNewUser));
+router.all("/", throwMethodNotAllowed([]));
 
 
 
