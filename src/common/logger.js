@@ -21,11 +21,13 @@ const logger = createLogger({
     level: level,
     defaultMeta: {service: 'user-service'},
     transports: [
-        new transports.Console({format: format.combine(
+        new transports.Console({
+            format: format.combine(
                 format.colorize(),
                 formatter
-            ),}),
-        new transports.File({filename: 'lins-backend.err', level: 'error', format:formatter})
+            ),
+        }),
+        new transports.File({filename: 'lins-backend.err', level: 'error', format: formatter})
     ],
     exitOnError: false,
 });
@@ -33,9 +35,8 @@ const logger = createLogger({
 
 // stream for morgan (requests) logging
 logger.stream = {
-    write: function(message, encoding) {
-        // use the 'info' log level so the output will be picked up by both transports (file and console)
-        logger.info(message);
+    write: function (message, encoding) {
+        logger.info(message.trim());
     },
 };
 
