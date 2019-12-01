@@ -46,7 +46,7 @@ app.use(function (err, req, res, next) {
     const status = err.status || 500;
     res.status(status);
     if (status >= 500) {
-        logger.error(err);
+        console.log(err);
     }
     if (req.app.get('env') === 'development') {
         res.send({

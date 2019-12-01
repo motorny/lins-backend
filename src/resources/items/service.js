@@ -1,6 +1,6 @@
 import {Item, ItemStatus, User, Storage} from "../../database/models";
 import createError from 'http-errors'
-import {saveBase64ToImage} from "../../common/staticHandlers";
+import {saveBase64ToImage, getMediaUrl} from "../../common/staticHandlers";
 import logger from "../../common/logger";
 
 async function userDefaultStorage(user) {
@@ -72,8 +72,7 @@ const composeItemObjToSend = async (item) => {
         id: item.id,
         name: item.name,
         description: item.description,
-        // todo: Image URL
-        image_url: "http://127.0.0.1",
+        image_url: getMediaUrl(item.image),
         status: item.status,
         storage: storage,
         user: user,
