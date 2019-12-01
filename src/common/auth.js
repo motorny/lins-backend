@@ -18,7 +18,7 @@ async function getTokenFromRequest(req) {
             throw Error('User not found in DB');
         }
     } catch (error) {
-        logger.debug(error);
+        logger.debug(error.message);
         return undefined;
     }
     return {
