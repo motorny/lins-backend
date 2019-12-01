@@ -23,6 +23,7 @@ async function getAllOwnerStorage(id) {
 
 async function changeStorageById(id, body) {
     const storage = await Storage.findByPk(id);
+
     if (!storage) {
         throw createError(412, 'Storage not found');
     }
