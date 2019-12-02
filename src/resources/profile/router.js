@@ -7,9 +7,10 @@ import validateSchema from './validation/validation';
 
 const router = express.Router();
 
-const registerNewUser = async (request, response) => {
-    const { body } = request;
-    const resMsg = await service.registerNewUser(body);
+const createNewProfile = async (request, response) => {
+    const { body, user } = request;
+    const info = {...body, currentUser: user.id};
+    const resMsg = await service.createNewProfile(info);
     response.status(200).send(resMsg);
 };
 
@@ -36,8 +37,8 @@ router.get("/:id", handleErrorAsync(getUserInfo));
 router.put("/:id", checkJWT, validateSchema('change-profile'), handleErrorAsync(updateUserInfo));
 router.delete("/:id", checkJWT, handleErrorAsync(deleteUser));
 router.all("/:id", throwMethodNotAllowed(['GET', 'PUT', 'DELETE']));
-//router.post("/", checkJWT, validateSchema('new-profile'), handleErrorAsync(registerNewUser));
-router.all("/", throwMethodNotAllowed([]));
+router.post("/", checkJWT, validateSchema('new-profile'), handleErrorAsync(createNewProfile));
+router.all("/", throwMethodNotAllowed(['POST']));
 
 
 
