@@ -21,21 +21,17 @@ async function getUserPublicInfo(query) {
         }
     });
     /* Search for storage associated with given user */
-    await Storage.findOne({ where: {owner_id: query.id} }).then(storage => {
-        if(!storage) {
+    await Storage.findAll({ where: {owner_id: query.id} }).then(storages => {
+        if(!storages) {
             throw createError(400, Error.NO_STORAGE_ASSOCIATED);
         }
         else{
-            const values = storage.dataValues;
-            retObj = {...retObj, storage: values };
+            retObj = {...retObj, storages: storages };
         }
     });
     /* Search for items associated with given storage */
     await Item.findAll({ where: {storage_id: retObj.storage.id} }).then(items => {
-        for(let i = 0; i < items.length; ++i) {
-            const values = items[i].dataValues;
-            retObj = {...retObj, items: values };
-        }
+            retObj = {...retObj, items: items };
     });
     return retObj;
 }
