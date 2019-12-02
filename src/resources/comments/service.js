@@ -1,36 +1,30 @@
 import {Comment, Item} from "../../database/models";
 import createError from "http-errors";
 import {saveBase64ToImage} from "../../common/staticHandlers";
+import {where} from "sequelize";
 //import * as Error from "../../common/constants";
 
 async function addNewComment(comment) {
-    //console.log(comment);
-    return Comment.create(comment);
-}
-
-async function getComments() {
-    //console.log("Doing getComments")
-    return Comment.findAll();
+    //TODO: add verification whether comment.user_id landed this thing
+    const item = await Item.findByPk(comment.item_id);
+    if (!item){
+        throw createError(400, 'No such item');
+    }
+    console.log(item);
+    if (comment.image){
+        comment.image = await saveBase64ToImage(comment.image, 'comments');
+    }
+    const createdComment = await Comment.create(comment);
+    return {
+        message: 'Success',
+        id: createdComment.id
+    }
 }
 
 async function getCommentsByItemId(query) {
-    let retObj;
-    //console.log("Doing getCommentsByItemId")
-    await Comment.findByPk(query.item_id).then( (comment) => {
-        if(!comment) {
-            retObj = null;
-        } else {
-            const values = user.dataValues;
-            retObj = {
-                user: values.user_id,
-                comment: values.comment,
-                title: values.title,
-                image_url: values.image_url,
-            };
-        }
-    });
-    return retObj;
+    const allComments = await Comment.findAll({where: {item_id: query}})
 }
+
 async function deleteCommentById(itemID) {
     const comment = await Comment.findByPk(itemID);
     if (!comment) {
@@ -55,7 +49,6 @@ async function changeCommentById(itemID, body) {
 export default {
     addNewComment,
     getCommentsByItemId,
-    getComments,
     deleteCommentById,
     changeCommentById
 }
