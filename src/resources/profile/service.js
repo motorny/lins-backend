@@ -1,8 +1,27 @@
 import { Profile, Storage, Item, User } from '../../database/models';
 import * as Error from '../../common/constants';
 import createError from 'http-errors';
+import {saveBase64ToImage} from "../../common/staticHandlers";
+import logger from "../../common/logger";
 
-async function registerNewUser(requestBody) {
+async function createNewProfile(requestBody) {
+    /* Check if we are admins */
+    let adminPrivilege;
+    await User.findByPk(requestBody.currentUser).then( (user) => {
+        if(!user) {
+            throw createError(400, Error.NO_SUCH_USER);
+        } else {
+            adminPrivilege = user.isAdmin; // adminPrivilege = true if we are admins
+        }
+    });
+    if (!adminPrivilege) {
+        throw createError(400, 'Not enough privilege');
+    }
+    if (requestBody.image_url) {
+        // relative path to the saved image is returned
+        requestBody.image_url = await saveBase64ToImage(requestBody.image_url, 'profile');
+        logger.debug(`Image saved to media storage`);
+    }
     let errMsg = Error.CANNOT_INSERT_VALUE_INTO_TABLE;
     await Profile.create(requestBody).then( () => {
         errMsg = Error.SUCCESS;
@@ -11,28 +30,30 @@ async function registerNewUser(requestBody) {
 }
 
 async function getUserPublicInfo(query) {
-    let retObj;
+    let retObj = {
+        user: {},
+        storages: [],
+        items: [],
+    };
     /* Search for public information about user - location, username etc */
     await Profile.findByPk(query.id).then( (user) => {
         if(!user) {
             throw createError(400, Error.NO_SUCH_USER);
         } else {
-            retObj = user.dataValues;
+            retObj.user = user;
         }
     });
     /* Search for storage associated with given user */
-    await Storage.findAll({ where: {owner_id: query.id} }).then(storages => {
-        if(!storages) {
-            throw createError(400, Error.NO_STORAGE_ASSOCIATED);
-        }
-        else{
-            retObj = {...retObj, storages: storages };
+    await Storage.findAll({ where: {owner_id: query.id} }).then(async (storages) => {
+            retObj.storages = storages;
+            /* Search for items associated with given storage */
+        for(let j = 0; j < storages.length; ++j) {
+            await Item.findAll({where: {storage_id: storages[j].id}}).then(items => {
+                retObj.items = items;
+            });
         }
     });
-    /* Search for items associated with given storage */
-    await Item.findAll({ where: {storage_id: retObj.storage.id} }).then(items => {
-            retObj = {...retObj, items: items };
-    });
+
     return retObj;
 }
 
@@ -44,7 +65,7 @@ async function updateUserInfo(userInfo){
         if(!user) {
             throw createError(400, Error.NO_SUCH_USER);
         } else {
-            privilege = (user.id === userInfo.id); // privilege = true if it's our profile
+            privilege = (user.id === userInfo.currentUser); // privilege = true if it's our profile
             targetPrivilege = user.role;
         }
     });
@@ -60,18 +81,15 @@ async function updateUserInfo(userInfo){
     if (!(adminPrivilege || privilege)) {
         throw createError(400, 'Not enough privilege');
     }
+    if (userInfo.image_url) {
+        // relative path to the saved image is returned
+        userInfo.image_url = await saveBase64ToImage(userInfo.image_url, 'profile');
+        logger.debug(`Image saved to media storage`);
+    }
     await Profile.update(
         userInfo,
         {where: {id: userInfo.id}}
     );
-    let test;
-    test = 1 + 2;
-    if (targetPrivilege !== userInfo.role) {
-        await User.update(
-            {isAdmin: userInfo.role === 'admin'? 1: 0},
-            {where: {id: userInfo.id}}
-        );
-    }
     return {
         message: 'Success'
     }
@@ -100,7 +118,7 @@ async function deleteUser(requestParams) {
 }
 
 export default {
-    registerNewUser,
+    createNewProfile,
     getUserPublicInfo,
     updateUserInfo,
     deleteUser,

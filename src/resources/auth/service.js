@@ -14,11 +14,11 @@ function generateAuthToken(user){
 
 async function acquireToken(fromURLencoded) {
     const user = await User.findOne({where: {login: fromURLencoded.login}});
-    logger.debug(`Processing user: ${user.login} (id: ${user.id})`);
     if (!user) {
         logger.debug(`User not found in DB`);
         throw createError(403, "Invalid user or password")
     }
+    logger.debug(`Processing user: ${user.login} (id: ${user.id})`);
     const match = await bcrypt.compare(fromURLencoded.password, user.password);
     if (!match) {
         logger.debug(`Passwords missmatch`);

@@ -27,7 +27,6 @@ const Profile = sequelizeBase.define('profiles', {
         image_url: {
             type: Sequelize.STRING,
             validate: {
-                isUrl: true,
                 notEmpty: false,
             }
         },
