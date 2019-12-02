@@ -25,6 +25,10 @@ To create database and tables:
 npm run initDB
 ```
 
+To fill database, use:
+```
+npm run seedDB
+```
 
 To start server in develop mode with live reloading:
 ```
