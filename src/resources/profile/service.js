@@ -1,14 +1,14 @@
-import { Profile, Storage, Item, User } from '../../database/models';
+import {Profile, Storage, Item, User} from '../../database/models';
 import * as Error from '../../common/constants';
 import createError from 'http-errors';
-import {saveBase64ToImage} from "../../common/staticHandlers";
+import {saveBase64ToImage, getMediaUrl} from "../../common/staticHandlers";
 import logger from "../../common/logger";
 
 async function createNewProfile(requestBody) {
     /* Check if we are admins */
     let adminPrivilege;
-    await User.findByPk(requestBody.currentUser).then( (user) => {
-        if(!user) {
+    await User.findByPk(requestBody.currentUser).then((user) => {
+        if (!user) {
             throw createError(400, Error.NO_SUCH_USER);
         } else {
             adminPrivilege = user.isAdmin; // adminPrivilege = true if we are admins
@@ -23,11 +23,24 @@ async function createNewProfile(requestBody) {
         logger.debug(`Image saved to media storage`);
     }
     let errMsg = Error.CANNOT_INSERT_VALUE_INTO_TABLE;
-    await Profile.create(requestBody).then( () => {
+    await Profile.create(requestBody).then(() => {
         errMsg = Error.SUCCESS;
     });
     return errMsg;
 }
+
+export async function composeProfileOfUser(userID) {
+    const profile = await Profile.findOne({
+        where: {user_id: userID},
+        attributes: ['id', 'username', 'image_url', 'location', 'contact', 'points']
+    });
+    if (!profile) {
+        return null;
+    }
+    profile.image_url = getMediaUrl(profile.image_url);
+    return profile;
+}
+
 
 async function getUserPublicInfo(query) {
     let retObj = {
@@ -36,18 +49,18 @@ async function getUserPublicInfo(query) {
         items: [],
     };
     /* Search for public information about user - location, username etc */
-    await Profile.findByPk(query.id).then( (user) => {
-        if(!user) {
+    await Profile.findByPk(query.id).then((user) => {
+        if (!user) {
             throw createError(400, Error.NO_SUCH_USER);
         } else {
             retObj.user = user;
         }
     });
     /* Search for storage associated with given user */
-    await Storage.findAll({ where: {owner_id: query.id} }).then(async (storages) => {
-            retObj.storages = storages;
-            /* Search for items associated with given storage */
-        for(let j = 0; j < storages.length; ++j) {
+    await Storage.findAll({where: {owner_id: query.id}}).then(async (storages) => {
+        retObj.storages = storages;
+        /* Search for items associated with given storage */
+        for (let j = 0; j < storages.length; ++j) {
             await Item.findAll({where: {storage_id: storages[j].id}}).then(items => {
                 retObj.items = items;
             });
@@ -57,12 +70,12 @@ async function getUserPublicInfo(query) {
     return retObj;
 }
 
-async function updateUserInfo(userInfo){
+async function updateUserInfo(userInfo) {
     /* Check if it's our profile */
     let privilege;
     let targetPrivilege;
-    await Profile.findByPk(userInfo.id).then( (user) => {
-        if(!user) {
+    await Profile.findByPk(userInfo.id).then((user) => {
+        if (!user) {
             throw createError(400, Error.NO_SUCH_USER);
         } else {
             privilege = (user.id === userInfo.currentUser); // privilege = true if it's our profile
@@ -71,8 +84,8 @@ async function updateUserInfo(userInfo){
     });
     /* Check if we are admins */
     let adminPrivilege;
-    await User.findByPk(userInfo.currentUser).then( (user) => {
-        if(!user) {
+    await User.findByPk(userInfo.currentUser).then((user) => {
+        if (!user) {
             throw createError(400, Error.NO_SUCH_USER);
         } else {
             adminPrivilege = user.isAdmin; // adminPrivilege = true if we are admins
@@ -96,10 +109,10 @@ async function updateUserInfo(userInfo){
 }
 
 async function deleteUser(requestParams) {
-    const { id } = requestParams;
+    const {id} = requestParams;
     let adminPrivilege;
-    await User.findByPk(requestParams.currentUser).then( (user) => {
-        if(!user) {
+    await User.findByPk(requestParams.currentUser).then((user) => {
+        if (!user) {
             throw createError(400, Error.NO_SUCH_USER);
         } else {
             adminPrivilege = user.isAdmin; // adminPrivilege = true if we are admins

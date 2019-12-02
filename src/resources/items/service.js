@@ -2,6 +2,7 @@ import {Item, ItemStatus, User, Storage} from "../../database/models";
 import createError from 'http-errors'
 import {saveBase64ToImage, getMediaUrl} from "../../common/staticHandlers";
 import logger from "../../common/logger";
+import {composeProfileOfUser} from "../profile/service";
 
 async function userDefaultStorage(user) {
     // returns user's default(first) storage
@@ -60,14 +61,20 @@ async function addNewItem(item, user) {
 }
 
 const composeItemObjToSend = async (item) => {
-    // later it will be populated with requests to storage, status user and tags tables
-    const storage = await item.getStorage({attributes: ['id', 'location', 'name', 'description']});
+    const storage = await item.getStorage({attributes: ['id', 'location', 'name', 'description', 'owner_id']});
     const tags = await item.getTags({attributes: ['id', 'tag']});
 
-    let user = null;
+    let owner = null;
     if (storage) {
-        user = await storage.getUser({attributes: ['id', 'login']});
+        const user = await storage.getUser({attributes: ['id']});
+        if (user) {
+            owner = {
+                id: user.id,
+                profile: await composeProfileOfUser(user.id)
+            }
+        }
     }
+
     return {
         id: item.id,
         name: item.name,
@@ -75,7 +82,7 @@ const composeItemObjToSend = async (item) => {
         image_url: getMediaUrl(item.image),
         status: item.status,
         storage: storage,
-        user: user,
+        owner: owner,
         tags: Array.from(tags, (tag) => {
             return {id: tag.id, tag: tag.tag}
         })
@@ -87,7 +94,7 @@ const composeItemObjToSend = async (item) => {
 async function getItems() {
     return Item.findAll().then(async (items) => {
         let itemsList = [];
-        logger.debug(`Got ${itemsList.length} items`);
+        logger.debug(`Got ${items.length} items`);
         if (items) {
             itemsList = await Promise.all(Array.from(items, composeItemObjToSend));
         }

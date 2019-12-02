@@ -34,7 +34,7 @@ export const checkJWT = async (req, res, next) => {
         res.status(403).send({message: 'Not authorized'});
     } else {
         req.user = tokenObj.user;
-        req.tokenData = tokenObj.data;
+        req.tokenData = tokenObj.tokenData;
         next()
     }
 };
@@ -48,7 +48,7 @@ export const checkJWTAdmin = async (req, res, next) => {
     } else {
         logger.info(`Admin ${tokenObj.user.login} is accessing protected endpoint`);
         req.user = tokenObj.user;
-        req.tokenData = tokenObj.data;
+        req.tokenData = tokenObj.tokenData;
         next()
     }
 };
