@@ -2,7 +2,7 @@ import {Item, ItemStatus, User, Storage} from "../../database/models";
 import createError from 'http-errors'
 import {saveBase64ToImage, getMediaUrl} from "../../common/staticHandlers";
 import logger from "../../common/logger";
-import {composeProfileOfUser} from "../profile/service";
+import {composeOwnerObject} from "../profile/service";
 
 async function userDefaultStorage(user) {
     // returns user's default(first) storage
@@ -65,14 +65,18 @@ const composeItemObjToSend = async (item) => {
     const tags = await item.getTags({attributes: ['id', 'tag']});
 
     let owner = null;
+    let composedStorage = null;
     if (storage) {
         const user = await storage.getUser({attributes: ['id']});
         if (user) {
-            owner = {
-                id: user.id,
-                profile: await composeProfileOfUser(user.id)
-            }
+            owner = await composeOwnerObject(user.id)
         }
+        composedStorage = {
+            id: storage.id,
+            location: storage.location,
+            name: storage.name,
+            description: storage.description
+        };
     }
 
     return {
@@ -81,7 +85,7 @@ const composeItemObjToSend = async (item) => {
         description: item.description,
         image_url: getMediaUrl(item.image),
         status: item.status,
-        storage: storage,
+        storage: composedStorage,
         owner: owner,
         tags: Array.from(tags, (tag) => {
             return {id: tag.id, tag: tag.tag}

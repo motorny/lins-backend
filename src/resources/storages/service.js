@@ -2,6 +2,8 @@ import {Item, Storage, User} from "../../database/models";
 import createError from "http-errors";
 import Sequelize from "sequelize";
 import logger from "../../common/logger";
+import message from "../../common/constants";
+import {composeOwnerObject} from "../profile/service";
 
 async function addNewStorage(body) {
     const otherUsersStorages = await Storage.findAll({where: {owner_id: body.owner_id}})
@@ -19,13 +21,20 @@ async function addNewStorage(body) {
 
 async function getOneStorage(id) {
     const storage = await Storage.findByPk(id, {
-        attributes: ['id', 'name', 'location', 'description'],
-        include: [{
-            model: User,
-            attributes: ['id']
-        }]
+        attributes: ['id', 'name', 'location', 'description', 'owner_id']
     });
-    return storage;
+    if (!storage) {
+        throw createError(404, message.NO_SUCH_STORAGE);
+    }
+    const owner = await composeOwnerObject(storage.owner_id);
+
+    return {
+        id: storage.id,
+        location: storage.location,
+        name: storage.name,
+        description: storage.description,
+        owner: owner,
+    }
 }
 
 async function getAllOwnerStorage(id) {

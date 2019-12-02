@@ -31,10 +31,6 @@ async function getAllOwnerStorage(request, response) {
         throw createError(400, "Invalid query parameters");
     }
     const storage = await service.getAllOwnerStorage(owner_id);
-    if(!storage)
-    {
-        throw createError(404, message.NO_SUCH_STORAGE);
-    }
     response.send(storage);
 }
 

@@ -29,16 +29,23 @@ async function createNewProfile(requestBody) {
     return errMsg;
 }
 
-export async function composeProfileOfUser(userID) {
+export async function composeOwnerObject(userID) {
+    if (!userID)
+        return null;
     const profile = await Profile.findOne({
         where: {user_id: userID},
-        attributes: ['id', 'username', 'image_url', 'location', 'contact', 'points']
+        attributes: [['id', 'profile_id'], 'username', 'image_url', 'location', 'contact', 'points']
     });
     if (!profile) {
-        return null;
+        return {
+            id: userID
+        };
     }
     profile.image_url = getMediaUrl(profile.image_url);
-    return profile;
+    return {
+        id: userID,
+        ...profile.dataValues
+    }
 }
 
 
