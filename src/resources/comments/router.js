@@ -17,27 +17,29 @@ async function handlePostAddNewComment(request, response) {
 async function handleGetCommentsByItemId(request, response) {
     const item_id = parseInt(request.params.item_id);
     const result = await service.getCommentsByItemId(item_id);
-    response.status(200).send(result);
+    response.send(result);
 }
 
 async function handleDeleteCommentById(request, response) {
     const id = parseInt(request.params.id);
-    const comment = await service.deleteCommentById(id);
-    response.status(200).send(comment);
+    const comment = await service.deleteCommentById(id, request.user);
+    //const comment = await service.deleteCommentById(id, 3);
+    response.send(comment);
 }
+
 async function handleChangeCommentById(request, response) {
     const id = parseInt(request.params.id);
     const {body} = request;
     const changedComment = await service.changeCommentById(id, body);
-    response.status(200).send(changedComment);
+    response.send(changedComment);
 }
 
 // router.post("/", checkJWT, validateSchema('new-comment'), handleErrorAsync(handlePostAddNewComment));
 router.post("/", validateSchema('new-comment'), handleErrorAsync(handlePostAddNewComment));
 router.get("/:item_id", handleErrorAsync(handleGetCommentsByItemId));
-
 router.delete("/:id", handleErrorAsync(handleDeleteCommentById));
-router.put("/:id", handleErrorAsync(handleChangeCommentById));
+router.put("/:id", validateSchema('change-comment'), handleErrorAsync(handleChangeCommentById));
+
 router.all("/",throwMethodNotAllowed(['POST']));
 router.all("/:id",throwMethodNotAllowed(['DELETE', 'PUT']));
 router.all("/:item_id",throwMethodNotAllowed(['GET']));
