@@ -1,45 +1,54 @@
 import jwt from 'jsonwebtoken';
 import {User} from '../database/models'
-import createError from 'http-errors'
+import logger from "./logger";
+
+async function getTokenFromRequest(req) {
+    let user, data;
+    try {
+        const tokenHeader = req.header('Authorization');
+        if (!tokenHeader) {
+            throw Error('No Authorization header present');
+        }
+
+        const token = tokenHeader.replace('Bearer ', '');
+        data = jwt.verify(token, process.env.JWT_KEY);
+
+        user = await User.findOne({where: {id: data.id}});
+        if (!user) {
+            throw Error('User not found in DB');
+        }
+    } catch (error) {
+        logger.debug(error.message);
+        return undefined;
+    }
+    return {
+        user: user,
+        tokenData: data
+    };
+}
+
 
 export const checkJWT = async (req, res, next) => {
-    try {
-        const token = req.header('Authorization').replace('Bearer ', '');
-        const data = jwt.verify(token, process.env.JWT_KEY);
-
-        const user = await User.findOne({where: {id: data.id}});
-        if(!user) {
-            throw Error();
-        }
-        req.user = user;
-        req.tokenData = data;
+    const tokenObj = await getTokenFromRequest(req);
+    if (!tokenObj) {
+        res.status(403).send({message: 'Not authorized'});
+    } else {
+        req.user = tokenObj.user;
+        req.tokenData = tokenObj.data;
         next()
-    } catch (error) {
-        console.log(error);
-        res.status(403).send({message: 'Not Authorized'});
     }
 };
 
 export const checkJWTAdmin = async (req, res, next) => {
-    let user;
-    try {
-        const token = req.header('Authorization').replace('Bearer ', '');
-        const data = jwt.verify(token, process.env.JWT_KEY);
-
-        user = await User.findOne({where: {id: data.id}});
-        if(!user || !user.isAdmin) {
-            throw Error();
-        }
-        req.user = user;
-        req.tokenData = data;
+    const tokenObj = await getTokenFromRequest(req);
+    if (!tokenObj) {
+        res.status(403).send({message: 'Not authorized'});
+    } else if (!tokenObj.user.isAdmin) {
+        res.status(403).send({message: 'Permission denied'});
+    } else {
+        logger.info(`Admin ${tokenObj.user.login} is accessing protected endpoint`);
+        req.user = tokenObj.user;
+        req.tokenData = tokenObj.data;
         next()
-    } catch (error) {
-        console.log(error);
-        if(!user) {
-            res.status(403).send({message: 'Not authorized'});
-        }
-        else{
-            res.status(403).send({message: 'You are not admin'});
-        }
     }
 };

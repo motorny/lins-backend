@@ -7,7 +7,7 @@ import cors from 'cors';
 
 import versionRouter from './resources/version/router';
 import profileRouter from './resources/profile/router';
-import itemsRouter  from './resources/items/router';
+import itemsRouter from './resources/items/router';
 import usersRouter from './resources/users/router';
 import storagesRouter from './resources/storages/router';
 import commentsRouter from './resources/comments/router';
@@ -18,11 +18,11 @@ const app = express();
 
 
 app.use(cors());
-app.use(morgan('short', { stream: logger.stream }));
+app.use(morgan('short', {stream: logger.stream}));
 app.use(express.json({limit: '10mb'}));
 app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use('/media', express.static(process.env.MEDIA_PATH));
 
 app.use('/version', versionRouter);
 app.use('/profile', profileRouter);

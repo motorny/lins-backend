@@ -1,11 +1,20 @@
 import {Item, Storage, User} from "../../database/models";
 import createError from "http-errors";
+import Sequelize from "sequelize";
+import logger from "../../common/logger";
 
 async function addNewStorage(body) {
-    const otherUsersStorages = await Storage.findAll({where: {owner_id: body.owner_id}});
+    const otherUsersStorages = await Storage.findAll({where: {owner_id: body.owner_id}})
     // create primary, if user does not have one.
     body.primary = !otherUsersStorages;
-    return Storage.create(body);
+    return Storage.create(body).catch((err) => {
+        if (err instanceof Sequelize.ForeignKeyConstraintError) {
+            logger.info(`Can not assign storage to user with id: ${body.owner_id}. No such user`);
+            throw createError(409, `Owner does not exist`)
+        } else {
+            throw err;
+        }
+    });
 }
 
 async function getOneStorage(id) {
@@ -13,8 +22,7 @@ async function getOneStorage(id) {
         attributes: ['id', 'name', 'location', 'description'],
         include: [{
             model: User,
-            as: 'owner',
-            attributes: ['id', 'login']
+            attributes: ['id']
         }]
     });
     return storage;
@@ -25,16 +33,14 @@ async function getAllOwnerStorage(id) {
         where: {owner_id: id},
         attributes: ['id', 'name', 'location', 'description', 'owner_id'],
         include: [{
-            as: 'owner',
             model: User,
-            attributes: ['id', 'login']
+            attributes: ['id']
         }]
     }).then(async (storages) => {
-        const storageList = await Promise.all(Array.from(storages));
         return {
             page: 1,
             totalCnt: storages.length,
-            storages: storageList
+            storages: storages
         };
     });
 }
