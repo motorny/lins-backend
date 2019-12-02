@@ -8,7 +8,7 @@
       "description": "Commentary body",
       "example": "Worked well with my PC"
     },
-    "image_url": {
+    "image": {
       "title": "Item's image for comment",
       "description": "base64 encoded image",
       "type": "string"

@@ -12,7 +12,7 @@ const Comment = sequelizeBase.define('comments', {
                 notEmpty: true,
             },
         },
-        image_url: {
+        image: {
             type: Sequelize.STRING,
             allowNull: true,
 
