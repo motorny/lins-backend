@@ -3,6 +3,8 @@ import createError from 'http-errors'
 import {saveBase64ToImage, getMediaUrl} from "../../common/staticHandlers";
 import logger from "../../common/logger";
 import {composeOwnerObject} from "../profile/service";
+import Sequelize from "sequelize";
+import {error} from "winston";
 
 async function userDefaultStorage(user) {
     // returns user's default(first) storage
@@ -22,6 +24,20 @@ async function userDefaultStorage(user) {
     });
 }
 
+async function assignTags(item, tag_ids) {
+    if (tag_ids) {
+        logger.info(`Assiging tags ${tag_ids}`);
+        await createdItem.setTags(tag_ids).catch((err) => {
+            if (err instanceof Sequelize.ForeignKeyConstraintError) {
+                logger.info(`Can add link to the tags with ids: ${tag_ids}. Some tag is not present in DB`);
+                throw createError(409, `Tag ids are not valid`)
+            } else {
+                throw err;
+            }
+        });
+    }
+}
+
 
 async function addNewItem(item, user) {
     if (item.image) {
@@ -39,20 +55,20 @@ async function addNewItem(item, user) {
         // validate if it is his own storage
         storage = await Storage.findByPk(item.storage_id);
         if (!storage)
-            createError(400, 'Invalid storage ID');
+            throw createError(400, 'Invalid storage ID');
         if (!user.isAdmin &&
             storage.owner_id !== user.id) {
             // check the user is assigning to it's own storage
             // if he is not an admin
-            createError(403, 'Permission denied');
+            logger.debug(`User ${user.login} does not own storage ${storage.id}`);
+            throw createError(403, 'Permission denied');
         }
     }
-    const createdItem = await Item.create(item);
+
     logger.info(`Creating item ${item.name} in the storage ${storage.name} (id: ${storage.id})`);
-    if (item.tag_ids) {
-        logger.info(`Assiging tags ${item.tag_ids}`);
-        await createdItem.setTags(item.tag_ids)
-    }
+    const createdItem = await Item.create(item);
+
+    await assignTags(createdItem, item.tag_ids);
 
     return {
         message: 'Success',
@@ -127,6 +143,12 @@ async function changeItemById(itemID, body, user) {
     }
 
     const storage = await item.getStorage();
+    if (!storage) {
+        logger.error(`Item ${item.id}  is not assigned to any storage`);
+        throw createError(500, 'Data inconsistency');
+    }
+
+
     if (!user.isAdmin && storage.owner_id !== user.id) {
         logger.debug(`Item ${item.name} (id: ${item.id}) is not owned by non-admin ${user.login}`);
         throw createError(403, 'Permission denied');
@@ -136,7 +158,7 @@ async function changeItemById(itemID, body, user) {
         const storage = await Storage.findByPk(item.storage_id);
         if (!storage) {
             logger.debug(`Storage with id ${body.storage_id} not found`);
-            createError(400, 'Invalid storage ID');
+            throw createError(400, 'Invalid storage ID');
         }
         if (!user.isAdmin &&
             storage.owner_id !== user.id) {
@@ -156,10 +178,7 @@ async function changeItemById(itemID, body, user) {
     logger.info(`Updating item ${item.name} (id: ${item.id}) with values ${body}`);
     await item.update(body, {fields: ['name', 'description', 'image', 'storage_id']});
 
-    if (body.tag_ids) {
-        logger.info(`Assiging tags ${body.tag_ids}`);
-        await item.setTags(body.tag_ids);
-    }
+    await assignTags(item, body.tag_ids);
 
     return composeItemObjToSend(item);
 }
@@ -172,6 +191,11 @@ async function deleteItemById(itemID, user) {
     }
 
     const storage = await item.getStorage({attributes: ['owner_id']});
+    if (!storage) {
+        logger.error(`Item ${item.id}  is not assigned to any storage`);
+        throw createError(500, 'Data inconsistency');
+    }
+
     if (!user.isAdmin &&
         storage.owner_id !== user.id) {
         // Can not delete not owned item, if not Admin

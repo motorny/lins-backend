@@ -6,7 +6,8 @@
       "title": "Name",
       "type": "string",
       "description": "Item name",
-      "example": "HDMI connector"
+      "example": "HDMI connector",
+      "minLength": 1
     },
     "image": {
       "title": "Item's image",
@@ -25,9 +26,12 @@
       "description": "Id of the storage the item will be assigned to. If not passed, the item will be assigned to the default user's storage"
     },
     "tag_ids" : {
-      "title": "Storage id",
+      "title": "Tags id",
       "type": "array",
-      "description": "Id of the storage the item will be assigned to. If not passed, the item will be assigned to the default user's storage"
+      "items": {
+        "type": "integer"
+      },
+      "description": "Ids of the Tags for this item"
     }
   },
   "additionalProperties": false,

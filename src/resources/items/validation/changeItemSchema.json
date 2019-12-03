@@ -6,7 +6,8 @@
       "title": "Name",
       "type": "string",
       "description": "Item name",
-      "example": "HDMI connector"
+      "example": "HDMI connector",
+      "minLength": 1
     },
     "image": {
       "title": "Item's image",
@@ -27,6 +28,9 @@
     "tag_ids" : {
       "title": "Tags id",
       "type": "array",
+      "items": {
+        "type": "integer"
+      },
       "description": "Ids of the Tags for this item"
     }
   },
