@@ -4,7 +4,7 @@ const path = require('path');
 module.exports = {
   development: {
     dialect: 'sqlite',
-    storage: './dev_database.sqlite',
+    storage: process.env.DEV_DATABASE_URL,
     logging: false,
   },
   test: {

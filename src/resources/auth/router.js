@@ -2,12 +2,13 @@ import express from 'express';
 import service from './service';
 import {handleErrorAsync, throwMethodNotAllowed} from '../../common/utils';
 import {checkJWT} from "../../common/auth";
+import validateSchema from "./validation";
 
 const router = express.Router();
 
 async function handlePostAcquireToken(request, response) {
-    const fromURLencoded = request.body;
-    const tokenResponse = await service.acquireToken(fromURLencoded);
+    const {body} = request;
+    const tokenResponse = await service.acquireToken(body);
     response.status(200).send(tokenResponse);
 }
 
@@ -20,7 +21,7 @@ async function handleGetTokenInfo(request, response) {
 
 
 router.get("/", checkJWT, handleErrorAsync(handleGetTokenInfo));
-router.post("/", handleErrorAsync(handlePostAcquireToken));
+router.post("/", validateSchema('acquire-token'), handleErrorAsync(handlePostAcquireToken));
 router.all("/", throwMethodNotAllowed(['GET', 'POST']));
 
 module.exports = router;
