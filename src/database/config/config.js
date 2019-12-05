@@ -5,7 +5,6 @@ module.exports = {
   development: {
     dialect: 'sqlite',
     storage: process.env.DEV_DATABASE_URL,
-    logging: false,
   },
   test: {
     url: process.env.TEST_DATABASE_URL,

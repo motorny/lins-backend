@@ -61,4 +61,5 @@ const Profile = sequelizeBase.define('profiles', {
         timestamps: true,
     });
 Profile.belongsTo(User, {foreignKey: 'user_id'});
+User.hasOne(Profile,{foreignKey: 'user_id'});
 export default Profile;

@@ -1,4 +1,4 @@
-import {Item, ItemStatus, User, Storage} from "../../database/models";
+import {Item, ItemStatus, User, Storage, Tag, Profile} from "../../database/models";
 import createError from 'http-errors'
 import {saveBase64ToImage, getMediaUrl} from "../../common/staticHandlers";
 import logger from "../../common/logger";
@@ -27,7 +27,7 @@ async function userDefaultStorage(user) {
 async function assignTags(item, tag_ids) {
     if (tag_ids) {
         logger.info(`Assiging tags ${tag_ids}`);
-        await createdItem.setTags(tag_ids).catch((err) => {
+        await item.setTags(tag_ids).catch((err) => {
             if (err instanceof Sequelize.ForeignKeyConstraintError) {
                 logger.info(`Can add link to the tags with ids: ${tag_ids}. Some tag is not present in DB`);
                 throw createError(409, `Tag ids are not valid`)
@@ -76,23 +76,20 @@ async function addNewItem(item, user) {
     };
 }
 
-const composeItemObjToSend = async (item) => {
-    const storage = await item.getStorage({attributes: ['id', 'location', 'name', 'description', 'owner_id']});
-    const tags = await item.getTags({attributes: ['id', 'tag']});
-
+const composeItemObjToSend = (item) => {
     let owner = null;
     let composedStorage = null;
-    if (storage) {
-        const user = await storage.getUser({attributes: ['id']});
-        if (user) {
-            owner = await composeOwnerObject(user.id)
+    let location = null;
+    const status = item.itemStatus && item.itemStatus.status;
+    if (item.storage) {
+        location = item.storage.location;
+        if (item.storage.user) {
+            owner = {id: item.storage.user.id};
+            if (item.storage.user.profile) {
+                owner.username = item.storage.user.profile.username;
+                owner.image_url = getMediaUrl(item.storage.user.profile.image_url);
+            }
         }
-        composedStorage = {
-            id: storage.id,
-            location: storage.location,
-            name: storage.name,
-            description: storage.description
-        };
     }
 
     return {
@@ -100,23 +97,44 @@ const composeItemObjToSend = async (item) => {
         name: item.name,
         description: item.description,
         image_url: getMediaUrl(item.image),
-        status: item.status,
         storage: composedStorage,
         owner: owner,
-        tags: Array.from(tags, (tag) => {
-            return {id: tag.id, tag: tag.tag}
-        })
+        tags: item.tags,
+        status: status
     }
 
 };
 
 
 async function getItems() {
-    return Item.findAll().then(async (items) => {
+    return Item.findAll({
+        attributes: ['id', 'name', 'image', 'description'],
+        include: [
+            {
+                model: Storage,
+                attributes: ['id', 'location'],
+                include: [{
+                    model: User,
+                    attributes: ['id'],
+                    include: [{
+                        model: Profile,
+                        attributes: ['id', 'username', 'image_url']
+                    }]
+                }]
+            },
+            {
+                model: Tag,
+                attributes: ['id', 'tag'],
+                through: {
+                    attributes: []
+                }
+            },
+            ItemStatus]
+    }).then((items) => {
         let itemsList = [];
         logger.debug(`Got ${items.length} items`);
         if (items) {
-            itemsList = await Promise.all(Array.from(items, composeItemObjToSend));
+            itemsList = Array.from(items, composeItemObjToSend);
         }
         return {
             page: 1,
