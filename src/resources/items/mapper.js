@@ -1,4 +1,6 @@
 import {getMediaUrl} from "../../common/staticHandlers";
+import {composeURL, ITEMS_E_N, PROFILES_E_N} from "../../common/endpointNames";
+import urljoin from "url-join";
 
 export const composeItemObjToSendMinified = (item) => {
     let owner = null;
@@ -22,7 +24,8 @@ export const composeItemObjToSendMinified = (item) => {
         location: location,
         image_url: getMediaUrl(item.image),
         owner: owner,
-        status: status
+        status: status,
+        _links: {_self: composeURL(urljoin(ITEMS_E_N, item.id.toString()))}
     }
 };
 
@@ -30,6 +33,7 @@ export const composeItemObjToSendFull = (item) => {
     let owner = null;
     let storage = null;
     let location = null;
+    let profileId = null;
     const status = item.itemStatus && item.itemStatus.status;
     if (item.storage) {
         location = item.storage.location;
@@ -44,6 +48,7 @@ export const composeItemObjToSendFull = (item) => {
                 owner.image_url = getMediaUrl(item.storage.user.profile.image_url);
                 owner.contact = item.storage.user.profile.contact;
                 owner.points = item.storage.user.profile.points;
+                profileId = item.storage.user.profile.id;
             }
         }
     }
@@ -60,5 +65,7 @@ export const composeItemObjToSendFull = (item) => {
         status: status,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
+        _links: {_self: composeURL(urljoin(ITEMS_E_N, item.id.toString())),
+        _owner_profile: profileId && composeURL(urljoin(PROFILES_E_N, profileId.toString()))}
     }
 };

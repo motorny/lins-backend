@@ -5,7 +5,8 @@ import logger from "../../common/logger";
 import Sequelize from "sequelize";
 import {composeItemObjToSendFull, composeItemObjToSendMinified} from "./mapper";
 import {getItemByIdFromDb, getAllItemsFromDb} from "./queries";
-
+import {composeURL, ITEMS_E_N} from "../../common/endpointNames";
+import urljoin from 'url-join';
 
 async function userDefaultStorage(user) {
     // returns user's default(first) storage
@@ -73,7 +74,8 @@ async function addNewItem(item, user) {
 
     return {
         message: 'Success',
-        id: createdItem.id
+        id: createdItem.id,
+        _links: {_self: composeURL(urljoin(ITEMS_E_N, createdItem.id.toString()))}
     };
 }
 

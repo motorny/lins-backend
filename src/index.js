@@ -4,6 +4,16 @@ import path from 'path';
 import morgan from 'morgan';
 import logger from "./common/logger";
 import cors from 'cors';
+import {
+    AUTH_E_N,
+    COMMENTS_E_N,
+    ITEMS_E_N,
+    PROFILES_E_N,
+    STORAGES_E_N,
+    TAGS_E_N,
+    USERS_E_N,
+    VERSION_E_N
+} from "./common/endpointNames";
 
 import versionRouter from './resources/version/router';
 import profileRouter from './resources/profile/router';
@@ -24,14 +34,14 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/media', express.static(process.env.MEDIA_PATH));
 
-app.use('/version', versionRouter);
-app.use('/profile', profileRouter);
-app.use('/items', itemsRouter);
-app.use('/storages', storagesRouter);
-app.use('/users', usersRouter);
-app.use('/comments', commentsRouter);
-app.use('/tags', tagsRouter);
-app.use('/auth', authRouter);
+app.use(VERSION_E_N, versionRouter);
+app.use(PROFILES_E_N, profileRouter);
+app.use(ITEMS_E_N, itemsRouter);
+app.use(STORAGES_E_N, storagesRouter);
+app.use(USERS_E_N, usersRouter);
+app.use(COMMENTS_E_N, commentsRouter);
+app.use(TAGS_E_N, tagsRouter);
+app.use(AUTH_E_N, authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
