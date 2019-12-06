@@ -3,10 +3,11 @@ import createError from "http-errors";
 import Sequelize from "sequelize";
 import logger from "../../common/logger";
 import message from "../../common/constants";
-import {composeOwnerObject} from "../profile/service";
+import {getStorageByIDFromDb} from "./queries";
+import {composeStorageFull} from "./mapper";
 
 async function addNewStorage(body) {
-    const otherUsersStorages = await Storage.findAll({where: {owner_id: body.owner_id}})
+    const otherUsersStorages = await Storage.findAll({where: {owner_id: body.owner_id}});
     // create primary, if user does not have one.
     body.primary = !otherUsersStorages;
     return Storage.create(body).catch((err) => {
@@ -19,22 +20,12 @@ async function addNewStorage(body) {
     });
 }
 
-async function getOneStorage(id) {
-    const storage = await Storage.findByPk(id, {
-        attributes: ['id', 'name', 'location', 'description', 'owner_id']
-    });
+async function getOneStorage(id, includeItemsLimit) {
+    const storage = await getStorageByIDFromDb(id, includeItemsLimit);
     if (!storage) {
         throw createError(404, message.NO_SUCH_STORAGE);
     }
-    const owner = await composeOwnerObject(storage.owner_id);
-
-    return {
-        id: storage.id,
-        location: storage.location,
-        name: storage.name,
-        description: storage.description,
-        owner: owner,
-    }
+    return composeStorageFull(storage);
 }
 
 async function getAllOwnerStorage(id) {

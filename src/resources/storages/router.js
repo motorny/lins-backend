@@ -17,7 +17,8 @@ async function addNewStorage(request, response) {
 
 async function getOneStorage(request, response) {
     const id = parseInt(request.params.id);
-    const storage = await service.getOneStorage(id);
+    const includeItemsLimit = parseInt(request.query.items_limit);
+    const storage = await service.getOneStorage(id,includeItemsLimit);
     if(!storage)
     {
         throw createError(404, message.NO_SUCH_STORAGE);

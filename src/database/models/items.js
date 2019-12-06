@@ -28,5 +28,6 @@ const Item = sequelizeBase.define('items',{
     });
 
 Item.belongsTo(Storage, {foreignKey: 'storage_id'});
+Storage.hasMany(Item,{foreignKey: 'storage_id'});
 Item.belongsTo(ItemStatus, {foreignKey: {name:'status', allowNull: false}});
 export default Item;
