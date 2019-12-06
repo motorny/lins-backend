@@ -1,10 +1,11 @@
-import {Item, ItemStatus, User, Storage, Tag, Profile} from "../../database/models";
+import {Item, ItemStatus, Storage } from "../../database/models";
 import createError from 'http-errors'
-import {saveBase64ToImage, getMediaUrl} from "../../common/staticHandlers";
+import {saveBase64ToImage} from "../../common/staticHandlers";
 import logger from "../../common/logger";
-import {composeOwnerObject} from "../profile/service";
 import Sequelize from "sequelize";
-import {error} from "winston";
+import {composeItemObjToSendFull, composeItemObjToSendMinified} from "./mapper";
+import {getItemByIdFromDb, getAllItemsFromDb} from "./queries";
+
 
 async function userDefaultStorage(user) {
     // returns user's default(first) storage
@@ -76,65 +77,12 @@ async function addNewItem(item, user) {
     };
 }
 
-const composeItemObjToSend = (item) => {
-    let owner = null;
-    let composedStorage = null;
-    let location = null;
-    const status = item.itemStatus && item.itemStatus.status;
-    if (item.storage) {
-        location = item.storage.location;
-        if (item.storage.user) {
-            owner = {id: item.storage.user.id};
-            if (item.storage.user.profile) {
-                owner.username = item.storage.user.profile.username;
-                owner.image_url = getMediaUrl(item.storage.user.profile.image_url);
-            }
-        }
-    }
-
-    return {
-        id: item.id,
-        name: item.name,
-        description: item.description,
-        image_url: getMediaUrl(item.image),
-        storage: composedStorage,
-        owner: owner,
-        tags: item.tags,
-        status: status
-    }
-
-};
-
-
 async function getItems() {
-    return Item.findAll({
-        attributes: ['id', 'name', 'image', 'description'],
-        include: [
-            {
-                model: Storage,
-                attributes: ['id', 'location'],
-                include: [{
-                    model: User,
-                    attributes: ['id'],
-                    include: [{
-                        model: Profile,
-                        attributes: ['id', 'username', 'image_url']
-                    }]
-                }]
-            },
-            {
-                model: Tag,
-                attributes: ['id', 'tag'],
-                through: {
-                    attributes: []
-                }
-            },
-            ItemStatus]
-    }).then((items) => {
+    return getAllItemsFromDb().then((items) => {
         let itemsList = [];
         logger.debug(`Got ${items.length} items`);
         if (items) {
-            itemsList = Array.from(items, composeItemObjToSend);
+            itemsList = Array.from(items, composeItemObjToSendMinified);
         }
         return {
             page: 1,
@@ -145,12 +93,12 @@ async function getItems() {
 }
 
 async function getItemById(itemID) {
-    const item = await Item.findByPk(itemID);
+    const item = await getItemByIdFromDb(itemID);
     if (!item) {
         logger.debug(`Item with id ${itemID} not found`);
         throw createError(412, 'Item not found');
     }
-    return composeItemObjToSend(item);
+    return composeItemObjToSendFull(item);
 }
 
 async function changeItemById(itemID, body, user) {
@@ -197,8 +145,11 @@ async function changeItemById(itemID, body, user) {
     await item.update(body, {fields: ['name', 'description', 'image', 'storage_id']});
 
     await assignTags(item, body.tag_ids);
-
-    return composeItemObjToSend(item);
+    const updatedItem = await getItemByIdFromDb(item.id);
+    if(!updatedItem) {
+        throw createError(500, "Update failed");
+    }
+    return composeItemObjToSendFull(updatedItem);
 }
 
 async function deleteItemById(itemID, user) {
