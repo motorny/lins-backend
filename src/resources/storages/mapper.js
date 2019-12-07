@@ -1,15 +1,15 @@
 import {getMediaUrl} from "../../common/staticHandlers";
 
 
-export function composeStorageFull(dbRes) {
+export function composeStorageFull(dbRes, includeItemsLimit) {
     let owner = null;
     if (dbRes.user) {
         owner = {id: dbRes.user.id};
         if (dbRes.user.profile) {
-                owner.username = dbRes.user.profile.username;
-                owner.image_url = getMediaUrl(dbRes.user.profile.image_url);
-                owner.contact = dbRes.user.profile.contact;
-                owner.points = dbRes.user.profile.points;
+            owner.username = dbRes.user.profile.username;
+            owner.image_url = getMediaUrl(dbRes.user.profile.image_url);
+            owner.contact = dbRes.user.profile.contact;
+            owner.points = dbRes.user.profile.points;
         }
     }
     const result = {
@@ -22,8 +22,20 @@ export function composeStorageFull(dbRes) {
         owner: owner
     };
 
-    if (dbRes.items){
+    if (includeItemsLimit) {
         result.items = dbRes.items;
+    } else {
+        result.items_count = dbRes.dataValues.items_count
     }
     return result
+}
+
+
+export function composeStorageMinified(dbRes) {
+    return {
+        id: dbRes.id,
+        name: dbRes.name,
+        location: dbRes.location,
+        items_count: dbRes.dataValues.items_count,
+    };
 }
