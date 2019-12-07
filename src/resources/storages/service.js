@@ -1,4 +1,4 @@
-import {Storage} from "../../database/models";
+import {Storage, User} from "../../database/models";
 import createError from "http-errors";
 import Sequelize from "sequelize";
 import logger from "../../common/logger";
@@ -12,6 +12,7 @@ async function addNewStorage(body) {
     const otherUsersStorages = await Storage.findAll({where: {owner_id: body.owner_id}});
     // create primary, if user does not have one.
     body.primary = !otherUsersStorages;
+    logger.info(`Storage will be created as primary: ${body.primary}`);
     const createdStorage = await Storage.create(body).catch((err) => {
         if (err instanceof Sequelize.ForeignKeyConstraintError) {
             logger.info(`Can not assign storage to user with id: ${body.owner_id}. No such user`);
@@ -20,6 +21,7 @@ async function addNewStorage(body) {
             throw err;
         }
     });
+    logger.debug(`Storage ${createdStorage.name} created with id: ${createdStorage.id}`);
     return {
         message: 'Success',
         id: createdStorage.id,
@@ -36,7 +38,13 @@ async function getOneStorage(id, includeItemsLimit) {
 }
 
 async function getAllOwnerStorage(userId) {
+    await User.findByPk(userId).then((res) => {
+        if (!res) {
+            throw createError(412, 'No such user');
+        }
+    });
     const storages = await getUsersStorageFromDb(userId).then((storages) => {
+        logger.debug(`Got ${storages.length} storages from DB`);
         return Array.from(storages, composeStorageMinified)
     });
     return {
@@ -55,14 +63,15 @@ async function changeStorageById(id, body, user) {
     if (!user.isAdmin) {
         if (storage.owner_id !== user.id) {
             // Can not modify not owned storage, if not Admin
+            logger.debug(`User ${user.login} does not own storage ${storage.id}, modification failed`);
             throw createError(403, 'Permission denied');
         }
         if (body.owner_id) {
             // Can not reassign storage, if not Admin
+            logger.debug(`User ${user.login} does not own storage ${storage.id}, reassigning failed`);
             throw createError(403, 'Permission denied');
         }
     }
-    // todo: handle update of 'primary' status
 
     return storage.update(body, {fields: ['name', 'location', 'description', 'owner_id']});
 }
@@ -72,11 +81,27 @@ async function deleteStorageById(id) {
     if (!storage) {
         throw createError(412, 'Storage not found');
     }
-    return storage.destroy().then(() => {
-        return {
-            message: `Storage (id: ${id}) successfully deleted!`
-        }
+    const assignOtherAsPrimary = storage.primary;
+    const storageOwner = await storage.getUser({attributes:['id']});
+    console.log(storageOwner.id);
+    if(!storageOwner){
+        throw createError(500, 'Data inconsistency');
+    }
+    await storage.destroy().then(() => {
+        logger.info(`Storage (id: ${id}) deleted`);
     });
+    if (assignOtherAsPrimary) {
+        const otherUserStorage = await Storage.findOne({where: {owner_id: storageOwner.id}});
+        if( otherUserStorage) {
+            await otherUserStorage.update({primary: true});
+            logger.info(`Storage (id: ${otherUserStorage.id}) was set as primary`);
+        } else {
+            logger.info(`This was last storage of user ${storageOwner.id}, but`)
+        }
+    }
+    return {
+        message: 'Success'
+    }
 }
 
 export default {

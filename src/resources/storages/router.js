@@ -42,8 +42,7 @@ async function changeStorageById(request, response) {
 
 async function deleteStorageById(request, response) {
     const id = parseInt(request.params.id);
-    const {body} = request;
-    const deletedStorage = await service.deleteStorageById(id, body);
+    const deletedStorage = await service.deleteStorageById(id);
     response.send(deletedStorage);
 }
 

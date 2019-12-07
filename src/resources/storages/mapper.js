@@ -24,8 +24,6 @@ export function composeStorageFull(dbRes, includeItemsLimit) {
 
     if (includeItemsLimit) {
         result.items = dbRes.items;
-    } else {
-        result.items_count = dbRes.dataValues.items_count
     }
     return result
 }
@@ -36,6 +34,5 @@ export function composeStorageMinified(dbRes) {
         id: dbRes.id,
         name: dbRes.name,
         location: dbRes.location,
-        items_count: dbRes.dataValues.items_count,
     };
 }

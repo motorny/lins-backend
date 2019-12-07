@@ -25,7 +25,6 @@ export async function getStorageByIDFromDb(storageId, includeItemsLimit) {
             model: Item,
             attributes: ['id'],
         });
-        includeOpts.push([Sequelize.fn("COUNT", Sequelize.col("items.id")), "items_count"])
     }
 
 
@@ -38,11 +37,7 @@ export async function getStorageByIDFromDb(storageId, includeItemsLimit) {
 export async function getUsersStorageFromDb(userId) {
     return Storage.findAll({
         where: {owner_id: userId},
-        attributes: {
-            include: ['id', 'name', 'location',
-                [Sequelize.fn("COUNT", Sequelize.col("items.id")), "items_count"]
-            ]
-        },
+        attributes: ['id', 'name', 'location',],
         include: [
             {
                 model: Item,
@@ -51,3 +46,7 @@ export async function getUsersStorageFromDb(userId) {
         ]
     });
 }
+
+
+// ONLY aplicable for engines with COUNT(*) OVER
+//        includeOpts.push([Sequelize.fn("COUNT", Sequelize.col("items.id")), "items_count"])
