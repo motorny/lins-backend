@@ -14,7 +14,13 @@ async function handlePostAddNewItem(request, response) {
 }
 
 async function handleGetItems(request, response) {
-    const items = await service.getItems();
+    const filter = request.query.filter;
+    const offset = Math.max(parseInt(request.query.offset) || 0, 0);
+    // by default, send 10 items
+    // send one item if negative value passed
+    const limit = Math.max(parseInt(request.query.limit) || 10, 1);
+
+    const items = await service.getItems(filter, offset, limit);
     response.send(items);
 }
 
@@ -34,13 +40,13 @@ async function handleDeleteItemById(request, response) {
 async function handleChangeItemById(request, response) {
     const id = parseInt(request.params.id);
     const {body} = request;
-    const changedItem = await service.changeItemById(id, body,request.user);
+    const changedItem = await service.changeItemById(id, body, request.user);
     response.send(changedItem);
 }
 
 
 router.get("/:id", handleErrorAsync(handleGetItemById));
-router.put("/:id",checkJWT, validateSchema('change-item'), handleErrorAsync(handleChangeItemById));
+router.put("/:id", checkJWT, validateSchema('change-item'), handleErrorAsync(handleChangeItemById));
 router.delete("/:id", checkJWT, handleErrorAsync(handleDeleteItemById));
 router.all("/:id", throwMethodNotAllowed(['GET', 'PUT', 'DELETE']));
 router.post("/", checkJWT, validateSchema('new-item'), handleErrorAsync(handlePostAddNewItem));

@@ -4,7 +4,7 @@ import {saveBase64ToImage} from "../../common/staticHandlers";
 import logger from "../../common/logger";
 import Sequelize from "sequelize";
 import {composeItemObjToSendFull, composeItemObjToSendMinified} from "./mapper";
-import {getItemByIdFromDb, getAllItemsFromDb} from "./queries";
+import {getItemByIdFromDb, getAllItemsFromDb, countAllItems} from "./queries";
 import {composeURL, ITEMS_E_N} from "../../common/endpointNames";
 import urljoin from 'url-join';
 
@@ -79,16 +79,17 @@ async function addNewItem(item, user) {
     };
 }
 
-async function getItems() {
-    return getAllItemsFromDb().then((items) => {
+async function getItems(filter, offset, limit) {
+    const filteredCount = await countAllItems(filter);
+    logger.debug(`Count of items, that matches filter: ${filteredCount}`);
+    return getAllItemsFromDb(filter, offset, limit).then((items) => {
         let itemsList = [];
         logger.debug(`Got ${items.length} items`);
         if (items) {
             itemsList = Array.from(items, composeItemObjToSendMinified);
         }
         return {
-            page: 1,
-            totalCnt: itemsList.length,
+            totalCnt: filteredCount,
             items: itemsList
         };
     });

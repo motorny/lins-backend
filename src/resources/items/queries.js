@@ -1,8 +1,42 @@
 import {Item, ItemStatus, Profile, Storage, Tag, User} from "../../database/models";
+import Sequelize from "sequelize";
+
+const Op = Sequelize.Op;
+
+const genereateItemsSearchExpr = (filter) => {
+    return {
+        [Op.or]: [
+            {
+                name: {[Op.substring]: filter}
+            },
+            {
+                description: {[Op.substring]: filter}
+            }
+        ]
+    };
+};
+
+export async function countAllItems(filter) {
+    let whereExpr = undefined;
+    if (filter) {
+        whereExpr = genereateItemsSearchExpr(filter)
+    }
+    return Item.count({
+        where: whereExpr,
+        attributes: ['id', 'name', 'description'],
+    });
+}
 
 
-export async function getAllItemsFromDb() {
+export async function getAllItemsFromDb(filter, offset, limit) {
+    let whereExpr = undefined;
+    if (filter) {
+        whereExpr = genereateItemsSearchExpr(filter);
+    }
     return Item.findAll({
+        offset: offset,
+        limit: limit,
+        where: whereExpr,
         attributes: ['id', 'name', 'image', 'description'],
         include: [
             {
