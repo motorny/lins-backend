@@ -1,3 +1,22 @@
 language: node_js
 node_js:
-  - 10
+- 10
+
+branches:
+  only:
+    - master
+    - develop
+
+after_success: npm run build
+
+deploy:
+  provider: releases
+  api_key:
+    secure: itlcNShoO8XARE97c5ZtTU81oJkAROFhTv0uvU9wtB4ZPKlAU1NTtQAA2+QrD8BL51MrgVYHwcv4vdA9G4xfh49DFSqgq1K0aYgDJNHEfM5+JaoHVHgzaudy0hiSBsGb8qHODE7ux1VwugI+3Tf1sNgNBPJGCPhSNBFIGZrltLoNQDAzDEBFqNOACGgFkyAmeHpaGyZ2e2WtFBSOwU2CP6w2DUfPUFNZsz+TmQ84bgmbWttGA+8D4815S1Sfw5eeVRQXxRqiZNAeZ+cVRfXRaiNMCJ1q89VOtjYEGO5WBb1tPGSOq1NTUY0FLmX+EZ29RMdQXFKbl4T935CPpqU1ysPBHggh53s8wXplOmqsGGHci/f8l9ozGQmcLjSZ7Rgjng4YGKF/mdoEjDKTvArf13ewnTYQ365kFbTnf8/5HUp+VwXp8SPI/AhykwRwMA4QN6HWYraq2zBN0/aCj4funmd+6zr0gfI/R9G8AgY7RN7mpUjEyqUMBAlAsstGqA5zSTQ3/j4KmMBOnVd1XwzuurFOP4HcRkhDIjBRAxXPjHq8Bs4BTklkiVJcxdFLQzhafhzZHjs0ZYdUoFGFUFCezVm1W4cW/EkIAvPyKhyvLM4KC+cmIwFNGwrMKZXtZ7Zci80+FxZv8qpTyO+C5YQcL2OUVsaR7NYrH7UivTtblF4=
+  file_glob: true
+  file:
+    - dist/*
+    - package.json
+    - package-lock.json
+  on:
+    repo: motorny/lins-backend

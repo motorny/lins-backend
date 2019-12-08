@@ -1,5 +1,7 @@
 # LINS backend
 
+[![Build Status](https://travis-ci.org/motorny/lins-backend.svg?branch=master)](https://travis-ci.org/motorny/lins-backend)
+
 ## Downloading a project
 Firstly you need to prepare your environment - you need to install Node.js and NPM packet manager.
 ```
