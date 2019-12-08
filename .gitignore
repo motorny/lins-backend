@@ -69,3 +69,7 @@ typings/
 
 # user saved static files
 media
+
+# build results
+*.tar.gz
+*.tar
