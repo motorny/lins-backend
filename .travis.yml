@@ -9,6 +9,12 @@ branches:
 
 after_success: npm run build
 
+
+before_deploy:
+  - cp package.json dist/ && cp package-lock.json dist/ && cp .env.example dist/ && cp .sequelizerc dist/
+  - tar -zcfv build-${TRAVIS_TAG}-${TRAVIS_BUILD_NUMBER}.tar.gz dist
+
+
 deploy:
   provider: releases
   skip_cleanup: true
