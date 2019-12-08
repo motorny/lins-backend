@@ -26,4 +26,4 @@ router.all("/:id", throwMethodNotAllowed(['PATCH']));
 router.post("/", validateSchema('new-user'), handleErrorAsync(handlePostAddNewUser));
 router.all("/", throwMethodNotAllowed(['POST']));
 
-module.exports = router;
+export default router;

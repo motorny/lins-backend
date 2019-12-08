@@ -62,9 +62,6 @@ typings/
 # next.js build output
 .next
 
-# ignore since we are using yarn
-package-lock.json
-
 # idea files
 .idea
 

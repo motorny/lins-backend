@@ -6,6 +6,6 @@ function getVersion(req, res, next) {
 }
 
 
-module.exports = {
+export {
     getVersion
 };

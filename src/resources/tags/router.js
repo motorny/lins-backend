@@ -23,4 +23,4 @@ router.get("/", handleErrorAsync(handleGetTagsAndStats));
 router.post("/", checkJWT, validateSchema('new-tag'), handleErrorAsync(handlePostAddNewTag));
 router.all("/",throwMethodNotAllowed(['GET','POST']));
 
-module.exports = router;
+export default router;

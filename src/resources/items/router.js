@@ -53,4 +53,4 @@ router.post("/", checkJWT, validateSchema('new-item'), handleErrorAsync(handlePo
 router.get("/", handleErrorAsync(handleGetItems));
 router.all("/", throwMethodNotAllowed(['GET', 'POST']));
 
-module.exports = router;
+export default router;

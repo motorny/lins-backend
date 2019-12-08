@@ -42,4 +42,4 @@ router.all("/", throwMethodNotAllowed(['POST']));
 
 
 
-module.exports = router;
+export default router;

@@ -44,4 +44,4 @@ router.all("/",throwMethodNotAllowed(['POST']));
 router.all("/:id",throwMethodNotAllowed(['DELETE', 'PUT']));
 router.all("/:item_id",throwMethodNotAllowed(['GET']));
 
-module.exports = router;
+export default router;

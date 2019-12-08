@@ -16,7 +16,7 @@ function throwMethodNotAllowed(allowed_list) {
     };
 }
 
-module.exports = {
+export {
     getVersion,
     handleErrorAsync,
     throwMethodNotAllowed

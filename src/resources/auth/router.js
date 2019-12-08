@@ -24,4 +24,4 @@ router.get("/", checkJWT, handleErrorAsync(handleGetTokenInfo));
 router.post("/", validateSchema('acquire-token'), handleErrorAsync(handlePostAcquireToken));
 router.all("/", throwMethodNotAllowed(['GET', 'POST']));
 
-module.exports = router;
+export default router;

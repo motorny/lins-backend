@@ -54,4 +54,4 @@ router.get("/", handleErrorAsync(getAllOwnerStorage));
 router.post("/", checkJWTAdmin, validateSchema('new-storage'), handleErrorAsync(addNewStorage));
 router.all("/", throwMethodNotAllowed(['GET', 'POST']));
 
-module.exports = router;
+export default router;
