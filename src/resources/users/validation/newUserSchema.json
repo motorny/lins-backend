@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "login": {
+      "title": "Login",
+      "type": "string",
+      "description": "User's login. Will be used to sign in to the web-site. Case sensitive",
+      "example": "dima"
+    },
+    "password": {
+      "title": "Password",
+      "description": "Please use strong passwords",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["login", "password"]
+}

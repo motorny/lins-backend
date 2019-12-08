@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string",
+      "description": "Item name",
+      "example": "HDMI connector",
+      "minLength": 1
+    },
+    "image": {
+      "title": "Item's image",
+      "description": "base64 encoded image",
+      "type": "string"
+    },
+    "description": {
+      "title": "Description",
+      "type": "string",
+      "description": "Full description for the item",
+      "example": "The best item ever"
+    },
+    "storage_id": {
+      "title": "Storage id",
+      "type": "integer",
+      "description": "Id of the storage the item will be assigned to."
+    },
+    "tag_ids" : {
+      "title": "Tags id",
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "Ids of the Tags for this item"
+    }
+  },
+  "additionalProperties": false
+}

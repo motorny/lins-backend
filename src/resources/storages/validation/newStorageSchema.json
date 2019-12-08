@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "name": {
+      "title": "Storage name",
+      "type": "string",
+      "description": "Storage name",
+      "exampe": "First storage"
+    },
+    "location": {
+      "title": "Storage location",
+      "description": "Location of storage",
+      "type": "string"
+    },
+    "description": {
+      "title": "Storage description",
+      "type": "string",
+      "description": "Full description of the storage",
+      "example": "This is the first storage"
+    },
+    "owner_id": {
+      "title": "Owner id of storage",
+      "type": "integer",
+      "description": "Id of the owner"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["name", "location", "owner_id"]
+}
