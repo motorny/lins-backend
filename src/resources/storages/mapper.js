@@ -29,10 +29,11 @@ export function composeStorageFull(dbRes, includeItemsLimit) {
 }
 
 
-export function composeStorageMinified(dbRes) {
+export function composeStorageMinified(dbRes, itemCounts) {
     return {
         id: dbRes.id,
         name: dbRes.name,
         location: dbRes.location,
+        itemsCount: itemCounts.get(dbRes.id)
     };
 }

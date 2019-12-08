@@ -3,7 +3,7 @@ import createError from "http-errors";
 import Sequelize from "sequelize";
 import logger from "../../common/logger";
 import message from "../../common/constants";
-import {getStorageByIDFromDb, getUsersStorageFromDb} from "./queries";
+import {getStorageByIDFromDb, getUsersStorageFromDb, countItemsOfStorages} from "./queries";
 import {composeStorageFull, composeStorageMinified} from "./mapper";
 import {composeURL, STORAGES_E_N} from "../../common/endpointNames";
 import urljoin from "url-join";
@@ -43,15 +43,26 @@ async function getAllOwnerStorage(userId) {
             throw createError(412, 'No such user');
         }
     });
+    const itemCountsQueryRes = await countItemsOfStorages();
+    const itemCounts = new Map();
+    itemCountsQueryRes.forEach((iC) => {
+        itemCounts.set(iC.dataValues.stid, iC.dataValues.items_count);
+    });
+    console.log(itemCounts);
+    const composeMinifiedWithCounts = (res) => {
+        return composeStorageMinified(res, itemCounts)
+    };
     const storages = await getUsersStorageFromDb(userId).then((storages) => {
         logger.debug(`Got ${storages.length} storages from DB`);
-        return Array.from(storages, composeStorageMinified)
+        return Array.from(storages, composeMinifiedWithCounts)
     });
+
+
     return {
         page: 1,
         owner: {id: userId},
         totalCnt: storages.length,
-        storages: storages
+        storages: storages,
     };
 }
 
@@ -82,9 +93,9 @@ async function deleteStorageById(id) {
         throw createError(412, 'Storage not found');
     }
     const assignOtherAsPrimary = storage.primary;
-    const storageOwner = await storage.getUser({attributes:['id']});
+    const storageOwner = await storage.getUser({attributes: ['id']});
     console.log(storageOwner.id);
-    if(!storageOwner){
+    if (!storageOwner) {
         throw createError(500, 'Data inconsistency');
     }
     await storage.destroy().then(() => {
@@ -92,7 +103,7 @@ async function deleteStorageById(id) {
     });
     if (assignOtherAsPrimary) {
         const otherUserStorage = await Storage.findOne({where: {owner_id: storageOwner.id}});
-        if( otherUserStorage) {
+        if (otherUserStorage) {
             await otherUserStorage.update({primary: true});
             logger.info(`Storage (id: ${otherUserStorage.id}) was set as primary`);
         } else {

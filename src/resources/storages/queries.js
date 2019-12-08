@@ -27,7 +27,6 @@ export async function getStorageByIDFromDb(storageId, includeItemsLimit) {
         });
     }
 
-
     return Storage.findByPk(storageId, {
         attributes: includeOpts,
         include: joinOpts
@@ -48,5 +47,15 @@ export async function getUsersStorageFromDb(userId) {
 }
 
 
-// ONLY aplicable for engines with COUNT(*) OVER
-//        includeOpts.push([Sequelize.fn("COUNT", Sequelize.col("items.id")), "items_count"])
+export async function countItemsOfStorages() {
+    return Storage.findAll({
+        attributes: [['id', 'stid'], [Sequelize.fn("COUNT", Sequelize.col("items.id")), "items_count"]],
+        group: 'stid',
+        include: [
+            {
+                model: Item,
+                attributes: ['id'],
+            },
+        ]
+    });
+}
