@@ -222,6 +222,32 @@ paths:
           description: "User not found"
 
   /tags:
+    get:
+      tags:
+        - "tags"
+      summary: "Get all tags with stats"
+      description: ""
+      operationId: "getTag"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              totalCnt:
+                type: "integer"
+                description: "Total count of tags"
+                example: 12
+              tags:
+                type: "array"
+                description: "Tag's unique id"
+                items:
+                  $ref: "#/definitions/TagStat"
+        403:
+          description: "Not authorized or token not valid"
+  
     post:
       tags:
         - "tags"
@@ -279,6 +305,21 @@ definitions:
         description: "Tag string"
         example: "accessories"
     required: ["tag"]
+  TagStat:
+    type: "object"
+    properties:
+      tag:
+        type: "string"
+        description: "Tag string"
+        example: "accessories"
+      id:
+        type: "integer"
+        description: "Tag's unique id"
+        example: 2  
+      itemsCnt:
+        type: "integer"
+        description: "Count of items, which has this tag assigned"
+        example: 23
 
 externalDocs:
   description: "Visit Github page and explore sourcecode"

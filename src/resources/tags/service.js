@@ -36,7 +36,7 @@ async function getAllTags() {
         const tagsList = await Promise.all(Array.from(tags, getLinkedCount));
         return {
             totalCnt: tags.length,
-            items: tagsList
+            tags: tagsList
         };
     });
 }
