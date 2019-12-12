@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "rm -rf dist && webpack --mode development",
-    "start" : "node dist/serverBundle.js",
+    "start": "node dist/serverBundle.js",
     "start:dev": "nodemon --exec babel-node app.js",
     "initDB": "babel-node src/database/models/initDB.js",
     "seedDB": "npx sequelize-cli db:seed:all"
@@ -28,9 +28,11 @@
     "sequelize": "^5.19.6",
     "sequelize-cli": "^5.5.1",
     "sqlite3": "^4.1.0",
+    "swagger-ui-express": "^4.1.2",
     "url-join": "^4.0.1",
     "uuid4": "latest",
-    "winston": "^3.2.1"
+    "winston": "^3.2.1",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.4",

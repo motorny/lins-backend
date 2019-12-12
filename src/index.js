@@ -4,6 +4,8 @@ import path from 'path';
 import morgan from 'morgan';
 import logger from "./common/logger";
 import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
 import {
     AUTH_E_N,
     COMMENTS_E_N,
@@ -42,6 +44,9 @@ app.use(USERS_E_N, usersRouter);
 app.use(COMMENTS_E_N, commentsRouter);
 app.use(TAGS_E_N, tagsRouter);
 app.use(AUTH_E_N, authRouter);
+
+const swaggerDocument = YAML.load(path.join(__dirname,'./common/swagger.yaml'));
+app.use('/', swaggerUi.serve,swaggerUi.setup(swaggerDocument));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

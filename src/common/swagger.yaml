@@ -1,0 +1,285 @@
+swagger: '2.0'
+info:
+  description: "LINS project REST api"
+  version: "1.0.0"
+  title: "LINS backend"
+  contact:
+    name: "Developer"
+    url: "https://github.com/motorny"
+    email: "motorny.nikita@gmail.com"
+
+tags:
+- name: "auth"
+  description: "Authorization stuff"
+- name: "users"
+  description: "Users registration and role management"
+- name: "items"
+  description: "Items management"
+- name: "profile"
+  description: "Profile, additional user information"
+- name: "storages"
+  description: "Storages management"
+- name: "tags"
+  description: "Tags creation and stats"
+- name: "comments"
+  description: "Comments management"
+- name: "version"
+  description: "Backend version info"
+
+
+schemes:
+- "http"
+paths:
+  /auth:
+    get:
+      tags:
+      - "auth"
+      summary: "Get token info"
+      description: "If Bearer token in Authorization header is valid, returns it's info and user's role"
+      operationId: "tokenInfo"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              isAdmin:
+                type: "boolean"
+                description: "User's role"
+              id:
+                type: "integer"
+                description: "User's unique id"
+                example: 2
+              exp:
+                type: "integer"
+                description: "Token expiration date in Unix epoch format"
+                example: 1576102397
+        403:
+          description: "Not authorized or token not valid"
+      security:
+        - JWT: []
+
+    post:
+      tags:
+      - "auth"
+      summary: "Acquire token with login and password"
+      description: ""
+      operationId: "acquireToken"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "credentials"
+        description: "Credentials"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            login:
+              type: "string"
+              description: "User's login"
+              example: "ceo@lins.com"
+              minLength: 1
+
+            password:
+              type: "string"
+              description: "User's password"
+              example: "qwerty"
+              minLength: 1
+          required: ["login", "password"]
+                
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              user_id:
+                type: "integer"
+                description: "User's unique id"
+                example: 2
+              token:
+                type: "string"
+                description: "JWT Token"
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZXhwIjoxNTc2MTAyMzk3fQ.xi2txb33i1_RW62fyt3C5Wn4zgA_S4FYsUiEZXGOunQ"
+        403:
+          description: "Not authorized or token not valid"
+  /users:
+    post:
+      tags:
+      - "users"
+      summary: "Add new user (register)"
+      description: "Multiple status values can be provided with comma separated strings"
+      operationId: "addUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "credentials"
+        description: "Credentials"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            login:
+              type: "string"
+              description: "User's login"
+              example: "ceo@lins.com"
+              minLength: 1
+
+            password:
+              type: "string"
+              description: "User's password"
+              example: "qwerty"
+              minLength: 1
+          required: ["login", "password"]
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                description: "status string"
+                example: "Success"
+              id:
+                type: "integer"
+                description: "User's unique id"
+                example: 2
+              login:
+                type: "string"
+                description: "User's login"
+                example: "ceo@lins.com"
+        400:
+          description: "Invalid status value"
+        403:
+          description: "Not authorized or token not valid"
+        409:
+          description: "Already exists"
+
+  /users/{userId}:
+    patch:
+      tags:
+      - "users"
+      summary: "Change user's role"
+      description: "Available only for admins"
+      operationId: "changeRole"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "userId"
+        in: "path"
+        description: "ID of user"
+        required: true
+        type: "integer"
+        format: "integer"
+      - in: "body"
+        name: "body"
+        description: "Credentials"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            isAdmin:
+              type: "boolean"
+              description: "User's role"
+          required: ["isAdmin"]
+        
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                description: "status string"
+                example: "Success"
+              id:
+                type: "integer"
+                description: "User's unique id"
+                example: 2
+              login:
+                type: "string"
+                description: "User's login"
+                example: "ceo@lins.com"
+              isAdmin:
+                type: "boolean"
+                description: "User's role"
+                example: true
+        403:
+          description: "Not authorized or token not valid"
+        404:
+          description: "User not found"
+
+  /tags:
+    post:
+      tags:
+        - "tags"
+      summary: "Add new tag"
+      description: ""
+      operationId: "newTag"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "tagData"
+        description: "Tag data"
+        required: true
+        schema:
+          $ref: "#/definitions/Tag"
+                
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                description: "status string"
+                example: "Success"
+              id:
+                type: "integer"
+                description: "Tag's unique id"
+                example: 2
+              tag:
+                type: "string"
+                description: "Added tag"
+                example: "accessories"
+        403:
+          description: "Not authorized or token not valid"
+        409:
+          description: "Tag Already exists"
+
+
+securityDefinitions:
+  JWT:
+    type: apiKey
+    in: header
+    name: Authorization
+
+definitions:
+  Tag:
+    type: "object"
+    properties:
+      tag:
+        type: "string"
+        description: "Tag string"
+        example: "accessories"
+    required: ["tag"]
+
+externalDocs:
+  description: "Visit Github page and explore sourcecode"
+  url: "https://github.com/motorny/lins-backend"
