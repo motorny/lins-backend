@@ -45,7 +45,7 @@ app.use(COMMENTS_E_N, commentsRouter);
 app.use(TAGS_E_N, tagsRouter);
 app.use(AUTH_E_N, authRouter);
 
-const swaggerDocument = YAML.load(path.join(__dirname,'./common/swagger.yaml'));
+const swaggerDocument = YAML.load('./src/common/swagger.yaml');
 app.use('/', swaggerUi.serve,swaggerUi.setup(swaggerDocument));
 
 // catch 404 and forward to error handler
