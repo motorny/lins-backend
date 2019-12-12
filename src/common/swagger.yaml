@@ -9,38 +9,38 @@ info:
     email: "motorny.nikita@gmail.com"
 
 tags:
-- name: "auth"
-  description: "Authorization stuff"
-- name: "users"
-  description: "Users registration and role management"
-- name: "items"
-  description: "Items management"
-- name: "profile"
-  description: "Profile, additional user information"
-- name: "storages"
-  description: "Storages management"
-- name: "tags"
-  description: "Tags creation and stats"
-- name: "comments"
-  description: "Comments management"
-- name: "version"
-  description: "Backend version info"
+  - name: "auth"
+    description: "Authorization stuff"
+  - name: "users"
+    description: "Users registration and role management"
+  - name: "items"
+    description: "Items management"
+  - name: "profile"
+    description: "Profile, additional user information"
+  - name: "storages"
+    description: "Storages management"
+  - name: "tags"
+    description: "Tags creation and stats"
+  - name: "comments"
+    description: "Comments management"
+  - name: "version"
+    description: "Backend version info"
 
 
 schemes:
-- "http"
+  - "http"
 paths:
   /auth:
     get:
       tags:
-      - "auth"
+        - "auth"
       summary: "Get token info"
       description: "If Bearer token in Authorization header is valid, returns it's info and user's role"
       operationId: "tokenInfo"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         200:
           description: "Success"
@@ -65,35 +65,35 @@ paths:
 
     post:
       tags:
-      - "auth"
+        - "auth"
       summary: "Acquire token with login and password"
       description: ""
       operationId: "acquireToken"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "credentials"
-        description: "Credentials"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            login:
-              type: "string"
-              description: "User's login"
-              example: "ceo@lins.com"
-              minLength: 1
+        - in: "body"
+          name: "credentials"
+          description: "Credentials"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              login:
+                type: "string"
+                description: "User's login"
+                example: "ceo@lins.com"
+                minLength: 1
 
-            password:
-              type: "string"
-              description: "User's password"
-              example: "qwerty"
-              minLength: 1
-          required: ["login", "password"]
-                
+              password:
+                type: "string"
+                description: "User's password"
+                example: "qwerty"
+                minLength: 1
+            required: ["login", "password"]
+
       responses:
         200:
           description: "Success"
@@ -113,34 +113,34 @@ paths:
   /users:
     post:
       tags:
-      - "users"
+        - "users"
       summary: "Add new user (register)"
       description: "Multiple status values can be provided with comma separated strings"
       operationId: "addUser"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "credentials"
-        description: "Credentials"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            login:
-              type: "string"
-              description: "User's login"
-              example: "ceo@lins.com"
-              minLength: 1
+        - in: "body"
+          name: "credentials"
+          description: "Credentials"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              login:
+                type: "string"
+                description: "User's login"
+                example: "ceo@lins.com"
+                minLength: 1
 
-            password:
-              type: "string"
-              description: "User's password"
-              example: "qwerty"
-              minLength: 1
-          required: ["login", "password"]
+              password:
+                type: "string"
+                description: "User's password"
+                example: "qwerty"
+                minLength: 1
+            required: ["login", "password"]
       responses:
         200:
           description: "Success"
@@ -169,31 +169,31 @@ paths:
   /users/{userId}:
     patch:
       tags:
-      - "users"
+        - "users"
       summary: "Change user's role"
       description: "Available only for admins"
       operationId: "changeRole"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "userId"
-        in: "path"
-        description: "ID of user"
-        required: true
-        type: "integer"
-        format: "integer"
-      - in: "body"
-        name: "body"
-        description: "Credentials"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            isAdmin:
-              type: "boolean"
-              description: "User's role"
-          required: ["isAdmin"]
-        
+        - name: "userId"
+          in: "path"
+          description: "ID of user"
+          required: true
+          type: "integer"
+          format: "integer"
+        - in: "body"
+          name: "body"
+          description: "Credentials"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              isAdmin:
+                type: "boolean"
+                description: "User's role"
+            required: ["isAdmin"]
+
       responses:
         200:
           description: "Success"
@@ -229,17 +229,17 @@ paths:
       description: ""
       operationId: "newTag"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "tagData"
-        description: "Tag data"
-        required: true
-        schema:
-          $ref: "#/definitions/Tag"
-                
+        - in: "body"
+          name: "tagData"
+          description: "Tag data"
+          required: true
+          schema:
+            $ref: "#/definitions/Tag"
+
       responses:
         200:
           description: "Success"
@@ -263,6 +263,127 @@ paths:
         409:
           description: "Tag Already exists"
 
+  /profile:
+    post:
+      tags:
+        - "profile"
+      summary: "Create new profile"
+      description: "Multiple status values can be provided with comma separated strings"
+      operationId: "createProfile"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "credentials"
+          description: "Credentials"
+          required: true
+          schema:
+            allOf:
+              - $ref: "#/definitions/Profile"
+              - required: ["username", "role", "location", "contact", "user_id"]
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                description: "status string"
+                example: "SUCCSESS"
+        400:
+          description: "Invalid status value"
+        403:
+          description: "Not authorized or token not valid"
+
+  /profile/{profileId}:
+    put:
+      tags:
+        - "profile"
+      summary: "Update existing profile"
+      description: "Multiple status values can be provided with comma separated strings"
+      operationId: "updateProfile"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "profileId"
+          in: "path"
+          description: "ID of profile"
+          required: true
+          type: "integer"
+          format: "integer"
+        - in: "body"
+          name: "credentials"
+          description: "Credentials"
+          required: true
+          schema:
+            $ref: "#/definitions/Profile"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                description: "status string"
+                example: "Success"
+        400:
+          description: "Invalid status value"
+        403:
+          description: "Not authorized or token not valid"
+        500:
+          description: "Validation errors"
+    get:
+      tags:
+        - "profile"
+      summary: "Get profile info"
+      description: "Get profile info"
+      operationId: "getProfile"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "profileId"
+          in: "path"
+          description: "ID of profile"
+          required: true
+          type: "integer"
+          format: "integer"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Profile"
+        400:
+          description: "Invalid status value"
+    delete:
+      tags:
+        - "profile"
+      summary: "Delete profile"
+      description: "Delete profile"
+      operationId: "deleteProfile"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "profileId"
+          in: "path"
+          description: "ID of profile"
+          required: true
+          type: "integer"
+          format: "integer"
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Invalid status value"
 
 securityDefinitions:
   JWT:
@@ -279,6 +400,41 @@ definitions:
         description: "Tag string"
         example: "accessories"
     required: ["tag"]
+
+  Profile:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+        description: "Unique username"
+        example: "ItemGiver"
+        minLength: 1
+
+      image_url:
+        type: "string"
+        description: "Avatar (base64Encoded)"
+        example: "???"
+
+      location:
+        type: "string"
+        description: "User's location"
+        example: "3rd room"
+
+      role:
+        type: "string"
+        description: "isAdmin?"
+        example: "user"
+
+      contact:
+        type: "string"
+        description: "Phone, e-mail etc"
+        example: "+7(921)582-54-21"
+
+      points:
+        type: "number"
+        description: "some form of bonus program"
+        example: 1
+
 
 externalDocs:
   description: "Visit Github page and explore sourcecode"
