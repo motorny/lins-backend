@@ -28,7 +28,11 @@ module.exports = {
                     loader: "babel-loader"
                 }
             },
-
+            {
+                test: /\.ya?ml$/,
+                include: path.resolve('data'),
+                loader: 'yaml',
+            },
         ]
     }
 }

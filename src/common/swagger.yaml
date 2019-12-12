@@ -9,38 +9,38 @@ info:
     email: "motorny.nikita@gmail.com"
 
 tags:
-- name: "auth"
-  description: "Authorization stuff"
-- name: "users"
-  description: "Users registration and role management"
-- name: "items"
-  description: "Items management"
-- name: "profile"
-  description: "Profile, additional user information"
-- name: "storages"
-  description: "Storages management"
-- name: "tags"
-  description: "Tags creation and stats"
-- name: "comments"
-  description: "Comments management"
-- name: "version"
-  description: "Backend version info"
+  - name: "auth"
+    description: "Authorization stuff"
+  - name: "users"
+    description: "Users registration and role management"
+  - name: "items"
+    description: "Items management"
+  - name: "profile"
+    description: "Profile, additional user information"
+  - name: "storages"
+    description: "Storages management"
+  - name: "tags"
+    description: "Tags creation and stats"
+  - name: "comments"
+    description: "Comments management"
+  - name: "version"
+    description: "Backend version info"
 
 
 schemes:
-- "http"
+  - "http"
 paths:
   /auth:
     get:
       tags:
-      - "auth"
+        - "auth"
       summary: "Get token info"
       description: "If Bearer token in Authorization header is valid, returns it's info and user's role"
       operationId: "tokenInfo"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         200:
           description: "Success"
@@ -65,35 +65,35 @@ paths:
 
     post:
       tags:
-      - "auth"
+        - "auth"
       summary: "Acquire token with login and password"
       description: ""
       operationId: "acquireToken"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "credentials"
-        description: "Credentials"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            login:
-              type: "string"
-              description: "User's login"
-              example: "ceo@lins.com"
-              minLength: 1
+        - in: "body"
+          name: "credentials"
+          description: "Credentials"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              login:
+                type: "string"
+                description: "User's login"
+                example: "ceo@lins.com"
+                minLength: 1
 
-            password:
-              type: "string"
-              description: "User's password"
-              example: "qwerty"
-              minLength: 1
-          required: ["login", "password"]
-                
+              password:
+                type: "string"
+                description: "User's password"
+                example: "qwerty"
+                minLength: 1
+            required: ["login", "password"]
+
       responses:
         200:
           description: "Success"
@@ -113,34 +113,34 @@ paths:
   /users:
     post:
       tags:
-      - "users"
+        - "users"
       summary: "Add new user (register)"
       description: "Multiple status values can be provided with comma separated strings"
       operationId: "addUser"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "credentials"
-        description: "Credentials"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            login:
-              type: "string"
-              description: "User's login"
-              example: "ceo@lins.com"
-              minLength: 1
+        - in: "body"
+          name: "credentials"
+          description: "Credentials"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              login:
+                type: "string"
+                description: "User's login"
+                example: "ceo@lins.com"
+                minLength: 1
 
-            password:
-              type: "string"
-              description: "User's password"
-              example: "qwerty"
-              minLength: 1
-          required: ["login", "password"]
+              password:
+                type: "string"
+                description: "User's password"
+                example: "qwerty"
+                minLength: 1
+            required: ["login", "password"]
       responses:
         200:
           description: "Success"
@@ -169,31 +169,31 @@ paths:
   /users/{userId}:
     patch:
       tags:
-      - "users"
+        - "users"
       summary: "Change user's role"
       description: "Available only for admins"
       operationId: "changeRole"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "userId"
-        in: "path"
-        description: "ID of user"
-        required: true
-        type: "integer"
-        format: "integer"
-      - in: "body"
-        name: "body"
-        description: "Credentials"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            isAdmin:
-              type: "boolean"
-              description: "User's role"
-          required: ["isAdmin"]
-        
+        - name: "userId"
+          in: "path"
+          description: "ID of user"
+          required: true
+          type: "integer"
+          format: "integer"
+        - in: "body"
+          name: "body"
+          description: "Credentials"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              isAdmin:
+                type: "boolean"
+                description: "User's role"
+            required: ["isAdmin"]
+
       responses:
         200:
           description: "Success"
@@ -229,17 +229,17 @@ paths:
       description: ""
       operationId: "newTag"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "tagData"
-        description: "Tag data"
-        required: true
-        schema:
-          $ref: "#/definitions/Tag"
-                
+        - in: "body"
+          name: "tagData"
+          description: "Tag data"
+          required: true
+          schema:
+            $ref: "#/definitions/Tag"
+
       responses:
         200:
           description: "Success"
@@ -263,6 +263,151 @@ paths:
         409:
           description: "Tag Already exists"
 
+  /storages:
+    post:
+      tags:
+        - "storages"
+      summary: "Add new storage"
+      description: "Avaliable only for admin"
+      operationId: "addNewStorage"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "credentials"
+          description: "Credentials"
+          required: true
+          schema:
+            $ref: "#/definitions/Storage"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                description: "status string"
+                example: "Success"
+              id:
+                type: "integer"
+                description: "Storage's unique id"
+                example: 1
+        400:
+          description: "Invalid status value"
+        403:
+          description: "Not authorized or token not valid"
+        409:
+          description: "Owner does not exist"
+
+    get:
+      tags:
+        - "storages"
+      summary: "Get all owner storage by owner_id"
+      description: "Available for all"
+      operationId: "getAllOwnerStorage"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "ownerID"
+          in: "query"
+          description: "ID of owner"
+          required: true
+          type: "integer"
+          format: "integer"
+
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/OwnerStorages"
+        400:
+          description: "Invalid query parameters: 'owner_id' required"
+        412:
+          description: "No such user"
+
+  /storages/{storageID}:
+    get:
+      tags:
+        - "storages"
+      summary: "Get storage by id"
+      description: "Available for all"
+      operationId: "getOneStorage"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "storageID"
+          in: "path"
+          description: "ID of storage"
+          required: true
+          type: "integer"
+          format: "integer"
+
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: '#/definitions/Storage'
+        404:
+          description: "Storage with this id is not existing"
+
+    delete:
+      tags:
+        - "storages"
+      summary: "Delete storage by id"
+      description: "Available for admins only"
+      operationId: "deleteStorageById"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "storageID"
+          in: "path"
+          description: "ID of storage"
+          required: true
+          type: "integer"
+          format: "integer"
+
+      responses:
+        200:
+          description: "Success"
+        412:
+          description: "Storage not found"
+        500:
+          description: "Data inconsistency"
+
+    put:
+      tags:
+        - "storages"
+      summary: "Change storage by id"
+      description: "Available for admins only"
+      operationId: "changeStorageById"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "storageID"
+          in: "path"
+          description: "ID of storage"
+          required: true
+          type: "integer"
+          format: "integer"
+        - in: "body"
+          name: "body"
+          description: "Credentials"
+          required: true
+          schema:
+            $ref: "#/definitions/Storage"
+
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Storage"
+        412:
+          description: "Storage not found"
+        403:
+          description: "Permission denied"
 
 securityDefinitions:
   JWT:
@@ -279,6 +424,54 @@ definitions:
         description: "Tag string"
         example: "accessories"
     required: ["tag"]
+
+  Storage:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        title: "Storage name"
+        description: "Storage name"
+        example: "First storage"
+        minLength: 1
+      location:
+        type: "string"
+        title: "Storage location"
+        description: "Location of storage"
+        example: "My location is here"
+        minLength: 1
+      description:
+        type: "string"
+        title: "Storage description"
+        description: "Full description of the storage"
+        example: "This is the first storage"
+        minLength: 1
+      owner_id:
+        type: "integer"
+        title: "Owner id of storage"
+        description: "Id of the owner"
+        example: 1
+        minLength: 1
+    required: ["name", "location", "owner_id"]
+
+  OwnerStorages:
+    type: "object"
+    properties:
+      page:
+        type: "integer"
+        description: 'Number of page of storages'
+      owner:
+        type: "integer"
+        description: "OwnerID"
+      totalCnt:
+        type: "integer"
+        description: "Amount of owned storage"
+      storages:
+        type: "array"
+        items:
+          $ref: '#/definitions/Storage'
+
+
 
 externalDocs:
   description: "Visit Github page and explore sourcecode"
