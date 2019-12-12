@@ -623,6 +623,127 @@ paths:
           description: "Storage not found"
         403:
           description: "Permission denied"
+  /profile:
+    post:
+      tags:
+        - "profile"
+      summary: "Create new profile"
+      description: "Multiple status values can be provided with comma separated strings"
+      operationId: "createProfile"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "credentials"
+          description: "Credentials"
+          required: true
+          schema:
+            allOf:
+              - $ref: "#/definitions/Profile"
+              - required: ["username", "role", "location", "contact", "user_id"]
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                description: "status string"
+                example: "SUCCSESS"
+        400:
+          description: "Invalid status value"
+        403:
+          description: "Not authorized or token not valid"
+
+  /profile/{profileId}:
+    put:
+      tags:
+        - "profile"
+      summary: "Update existing profile"
+      description: "Multiple status values can be provided with comma separated strings"
+      operationId: "updateProfile"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "profileId"
+          in: "path"
+          description: "ID of profile"
+          required: true
+          type: "integer"
+          format: "integer"
+        - in: "body"
+          name: "credentials"
+          description: "Credentials"
+          required: true
+          schema:
+            $ref: "#/definitions/Profile"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                description: "status string"
+                example: "Success"
+        400:
+          description: "Invalid status value"
+        403:
+          description: "Not authorized or token not valid"
+        500:
+          description: "Validation errors"
+    get:
+      tags:
+        - "profile"
+      summary: "Get profile info"
+      description: "Get profile info"
+      operationId: "getProfile"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "profileId"
+          in: "path"
+          description: "ID of profile"
+          required: true
+          type: "integer"
+          format: "integer"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Profile"
+        400:
+          description: "Invalid status value"
+    delete:
+      tags:
+        - "profile"
+      summary: "Delete profile"
+      description: "Delete profile"
+      operationId: "deleteProfile"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "profileId"
+          in: "path"
+          description: "ID of profile"
+          required: true
+          type: "integer"
+          format: "integer"
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Invalid status value"
 
 securityDefinitions:
   JWT:
@@ -909,6 +1030,41 @@ definitions:
         items:
           $ref: '#/definitions/Storage'
 
+
+
+  Profile:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+        description: "Unique username"
+        example: "ItemGiver"
+        minLength: 1
+
+      image_url:
+        type: "string"
+        description: "Avatar (base64Encoded)"
+        example: "???"
+
+      location:
+        type: "string"
+        description: "User's location"
+        example: "3rd room"
+
+      role:
+        type: "string"
+        description: "isAdmin?"
+        example: "user"
+
+      contact:
+        type: "string"
+        description: "Phone, e-mail etc"
+        example: "+7(921)582-54-21"
+
+      points:
+        type: "number"
+        description: "some form of bonus program"
+        example: 1
 
 
 externalDocs:
