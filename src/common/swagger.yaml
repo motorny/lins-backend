@@ -9,38 +9,38 @@ info:
     email: "motorny.nikita@gmail.com"
 
 tags:
-- name: "auth"
-  description: "Authorization stuff"
-- name: "users"
-  description: "Users registration and role management"
-- name: "items"
-  description: "Items management"
-- name: "profile"
-  description: "Profile, additional user information"
-- name: "storages"
-  description: "Storages management"
-- name: "tags"
-  description: "Tags creation and stats"
-- name: "comments"
-  description: "Comments management"
-- name: "version"
-  description: "Backend version info"
+  - name: "auth"
+    description: "Authorization stuff"
+  - name: "users"
+    description: "Users registration and role management"
+  - name: "items"
+    description: "Items management"
+  - name: "profile"
+    description: "Profile, additional user information"
+  - name: "storages"
+    description: "Storages management"
+  - name: "tags"
+    description: "Tags creation and stats"
+  - name: "comments"
+    description: "Comments management"
+  - name: "version"
+    description: "Backend version info"
 
 
 schemes:
-- "http"
+  - "http"
 paths:
   /auth:
     get:
       tags:
-      - "auth"
+        - "auth"
       summary: "Get token info"
       description: "If Bearer token in Authorization header is valid, returns it's info and user's role"
       operationId: "tokenInfo"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         200:
           description: "Success"
@@ -65,35 +65,35 @@ paths:
 
     post:
       tags:
-      - "auth"
+        - "auth"
       summary: "Acquire token with login and password"
       description: ""
       operationId: "acquireToken"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "credentials"
-        description: "Credentials"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            login:
-              type: "string"
-              description: "User's login"
-              example: "ceo@lins.com"
-              minLength: 1
+        - in: "body"
+          name: "credentials"
+          description: "Credentials"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              login:
+                type: "string"
+                description: "User's login"
+                example: "ceo@lins.com"
+                minLength: 1
 
-            password:
-              type: "string"
-              description: "User's password"
-              example: "qwerty"
-              minLength: 1
-          required: ["login", "password"]
-                
+              password:
+                type: "string"
+                description: "User's password"
+                example: "qwerty"
+                minLength: 1
+            required: ["login", "password"]
+
       responses:
         200:
           description: "Success"
@@ -110,37 +110,38 @@ paths:
                 example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZXhwIjoxNTc2MTAyMzk3fQ.xi2txb33i1_RW62fyt3C5Wn4zgA_S4FYsUiEZXGOunQ"
         403:
           description: "Not authorized or token not valid"
+
   /users:
     post:
       tags:
-      - "users"
+        - "users"
       summary: "Add new user (register)"
       description: "Multiple status values can be provided with comma separated strings"
       operationId: "addUser"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "credentials"
-        description: "Credentials"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            login:
-              type: "string"
-              description: "User's login"
-              example: "ceo@lins.com"
-              minLength: 1
+        - in: "body"
+          name: "credentials"
+          description: "Credentials"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              login:
+                type: "string"
+                description: "User's login"
+                example: "ceo@lins.com"
+                minLength: 1
 
-            password:
-              type: "string"
-              description: "User's password"
-              example: "qwerty"
-              minLength: 1
-          required: ["login", "password"]
+              password:
+                type: "string"
+                description: "User's password"
+                example: "qwerty"
+                minLength: 1
+            required: ["login", "password"]
       responses:
         200:
           description: "Success"
@@ -169,31 +170,31 @@ paths:
   /users/{userId}:
     patch:
       tags:
-      - "users"
+        - "users"
       summary: "Change user's role"
       description: "Available only for admins"
       operationId: "changeRole"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "userId"
-        in: "path"
-        description: "ID of user"
-        required: true
-        type: "integer"
-        format: "integer"
-      - in: "body"
-        name: "body"
-        description: "Credentials"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            isAdmin:
-              type: "boolean"
-              description: "User's role"
-          required: ["isAdmin"]
-        
+        - name: "userId"
+          in: "path"
+          description: "ID of user"
+          required: true
+          type: "integer"
+          format: "integer"
+        - in: "body"
+          name: "body"
+          description: "Credentials"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              isAdmin:
+                type: "boolean"
+                description: "User's role"
+            required: ["isAdmin"]
+
       responses:
         200:
           description: "Success"
@@ -220,6 +221,8 @@ paths:
           description: "Not authorized or token not valid"
         404:
           description: "User not found"
+      security:
+        - JWT: []
 
   /tags:
     get:
@@ -229,7 +232,7 @@ paths:
       description: ""
       operationId: "getTag"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         200:
           description: "Success"
@@ -253,17 +256,17 @@ paths:
       description: ""
       operationId: "newTag"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "tagData"
-        description: "Tag data"
-        required: true
-        schema:
-          $ref: "#/definitions/Tag"
-                
+        - in: "body"
+          name: "tagData"
+          description: "Tag data"
+          required: true
+          schema:
+            $ref: "#/definitions/Tag"
+
       responses:
         200:
           description: "Success"
@@ -286,6 +289,9 @@ paths:
           description: "Not authorized or token not valid"
         409:
           description: "Tag Already exists"
+      security:
+        - JWT: []
+
 
   /version:
     get:
@@ -295,7 +301,7 @@ paths:
       description: ""
       operationId: "getVersion"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         200:
           description: "Success"
@@ -315,22 +321,21 @@ paths:
       description: ""
       operationId: "getItems"
       parameters:
-      - in: "query"
-        name: "offset"
-        type: "integer"
-        description: "Offset for fetchong data"
-        required: false
-      - in: "query"
-        name: "limit"
-        type: "integer"
-        description: "Limit of fetched data count"
-      - in: "query"
-        name: "filter"
-        type: "string"
-        description: "Filter items by this string in Name and Descripiton fields"
-
+        - in: "query"
+          name: "offset"
+          type: "integer"
+          description: "Offset for fetchong data"
+          required: false
+        - in: "query"
+          name: "limit"
+          type: "integer"
+          description: "Limit of fetched data count"
+        - in: "query"
+          name: "filter"
+          type: "string"
+          description: "Filter items by this string in Name and Descripiton fields"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         200:
           description: "Success"
@@ -347,7 +352,6 @@ paths:
                 items:
                   $ref: "#/definitions/ItemMini"
 
-
     post:
       tags:
         - "items"
@@ -355,16 +359,16 @@ paths:
       description: ""
       operationId: "newItem"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "itemData"
-        description: "Item data"
-        required: true
-        schema:
-          $ref: "#/definitions/Item"
+        - in: "body"
+          name: "itemData"
+          description: "Item data"
+          required: true
+          schema:
+            $ref: "#/definitions/Item"
       responses:
         200:
           description: "Success"
@@ -389,6 +393,8 @@ paths:
                     example: "http://example.com/media/first.png"
         403:
           description: "Not authorized or token not valid"
+      security:
+        - JWT: []
 
   /items/{itemId}:
     get:
@@ -398,16 +404,16 @@ paths:
       description: ""
       operationId: "getOneItem"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "itemId"
-        in: "path"
-        description: "ID of the item"
-        required: true
-        type: "integer"
-        format: "integer"
+        - name: "itemId"
+          in: "path"
+          description: "ID of the item"
+          required: true
+          type: "integer"
+          format: "integer"
       responses:
         200:
           description: "Success"
@@ -423,22 +429,22 @@ paths:
       description: ""
       operationId: "editItem"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "itemId"
-        in: "path"
-        description: "ID of the item"
-        required: true
-        type: "integer"
-        format: "integer"
-      - in: "body"
-        name: "itemData"
-        description: "Item data"
-        required: true
-        schema:
-          $ref: "#/definitions/Item"
+        - name: "itemId"
+          in: "path"
+          description: "ID of the item"
+          required: true
+          type: "integer"
+          format: "integer"
+        - in: "body"
+          name: "itemData"
+          description: "Item data"
+          required: true
+          schema:
+            $ref: "#/definitions/Item"
       responses:
         200:
           description: "Success"
@@ -448,6 +454,9 @@ paths:
           description: "Not authorized or token not valid"
         412:
           description: "Item ID is not valid"
+      security:
+        - JWT: []
+
 
     delete:
       tags:
@@ -456,14 +465,14 @@ paths:
       description: ""
       operationId: "deleteItem"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "itemId"
-        in: "path"
-        description: "ID of the item"
-        required: true
-        type: "integer"
-        format: "integer"
+        - name: "itemId"
+          in: "path"
+          description: "ID of the item"
+          required: true
+          type: "integer"
+          format: "integer"
       responses:
         200:
           description: "Success"
@@ -478,7 +487,36 @@ paths:
           description: "Not authorized or token not valid"
         412:
           description: "Item ID is not valid"
+      security:
+        - JWT: []
+
   /storages:
+    get:
+      tags:
+        - "storages"
+      summary: "Get all owner storage by owner_id"
+      description: "Available for all"
+      operationId: "getAllOwnerStorage"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "ownerID"
+          in: "query"
+          description: "ID of owner"
+          required: true
+          type: "integer"
+          format: "integer"
+
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/OwnerStorages"
+        400:
+          description: "Invalid query parameters: 'owner_id' required"
+        412:
+          description: "No such user"
+
     post:
       tags:
         - "storages"
@@ -516,32 +554,9 @@ paths:
           description: "Not authorized or token not valid"
         409:
           description: "Owner does not exist"
+      security:
+        - JWT: []
 
-    get:
-      tags:
-        - "storages"
-      summary: "Get all owner storage by owner_id"
-      description: "Available for all"
-      operationId: "getAllOwnerStorage"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "ownerID"
-          in: "query"
-          description: "ID of owner"
-          required: true
-          type: "integer"
-          format: "integer"
-
-      responses:
-        200:
-          description: "Success"
-          schema:
-            $ref: "#/definitions/OwnerStorages"
-        400:
-          description: "Invalid query parameters: 'owner_id' required"
-        412:
-          description: "No such user"
 
   /storages/{storageID}:
     get:
@@ -559,7 +574,6 @@ paths:
           required: true
           type: "integer"
           format: "integer"
-
       responses:
         200:
           description: "Success"
@@ -567,30 +581,6 @@ paths:
             $ref: '#/definitions/Storage'
         404:
           description: "Storage with this id is not existing"
-
-    delete:
-      tags:
-        - "storages"
-      summary: "Delete storage by id"
-      description: "Available for admins only"
-      operationId: "deleteStorageById"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "storageID"
-          in: "path"
-          description: "ID of storage"
-          required: true
-          type: "integer"
-          format: "integer"
-
-      responses:
-        200:
-          description: "Success"
-        412:
-          description: "Storage not found"
-        500:
-          description: "Data inconsistency"
 
     put:
       tags:
@@ -613,7 +603,6 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/Storage"
-
       responses:
         200:
           description: "Success"
@@ -623,6 +612,34 @@ paths:
           description: "Storage not found"
         403:
           description: "Permission denied"
+      security:
+        - JWT: []
+
+    delete:
+      tags:
+        - "storages"
+      summary: "Delete storage by id"
+      description: "Available for admins only"
+      operationId: "deleteStorageById"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "storageID"
+          in: "path"
+          description: "ID of storage"
+          required: true
+          type: "integer"
+          format: "integer"
+
+      responses:
+        200:
+          description: "Success"
+        412:
+          description: "Storage not found"
+      security:
+        - JWT: []
+
+
   /profile:
     post:
       tags:
@@ -657,8 +674,36 @@ paths:
           description: "Invalid status value"
         403:
           description: "Not authorized or token not valid"
+      security:
+        - JWT: []
+
 
   /profile/{profileId}:
+    get:
+      tags:
+        - "profile"
+      summary: "Get profile info"
+      description: "Get profile info"
+      operationId: "getProfile"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "profileId"
+          in: "path"
+          description: "ID of profile"
+          required: true
+          type: "integer"
+          format: "integer"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Profile"
+        400:
+          description: "Invalid status value"
+
     put:
       tags:
         - "profile"
@@ -696,32 +741,10 @@ paths:
           description: "Invalid status value"
         403:
           description: "Not authorized or token not valid"
-        500:
-          description: "Validation errors"
-    get:
-      tags:
-        - "profile"
-      summary: "Get profile info"
-      description: "Get profile info"
-      operationId: "getProfile"
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "profileId"
-          in: "path"
-          description: "ID of profile"
-          required: true
-          type: "integer"
-          format: "integer"
-      responses:
-        200:
-          description: "Success"
-          schema:
-            $ref: "#/definitions/Profile"
-        400:
-          description: "Invalid status value"
+      security:
+        - JWT: []
+
+
     delete:
       tags:
         - "profile"
@@ -744,6 +767,9 @@ paths:
           description: "Success"
         400:
           description: "Invalid status value"
+      security:
+        - JWT: []
+
 
 securityDefinitions:
   JWT:
@@ -862,7 +888,6 @@ definitions:
             type: "string"
             description: "Url to get all item's info"
             example: "http://example.com/media/first.png"
-
 
   ItemFull:
     type: "object"
@@ -983,7 +1008,6 @@ definitions:
             example: "http://example.com/profiles/2"
 
 
-
   Storage:
     type: "object"
     properties:
@@ -1029,7 +1053,6 @@ definitions:
         type: "array"
         items:
           $ref: '#/definitions/Storage'
-
 
 
   Profile:
