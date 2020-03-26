@@ -15,6 +15,7 @@ module.exports = {
         return queryInterface.bulkInsert('users', [
             {
                 login: 'johndoe@yourmum.com',
+                // all passwords are "qwerty"
                 password: '$2a$10$DXYW9p9Mjs87X8xdGqU9eeRPUn8kshpd/GcTfwlvx5pxAR6T4.com',
                 createdAt: new Date(),
                 updatedAt: new Date(),

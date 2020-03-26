@@ -7,7 +7,7 @@ export function composeStorageFull(dbRes, includeItemsLimit) {
         owner = {id: dbRes.user.id};
         if (dbRes.user.profile) {
             owner.username = dbRes.user.profile.username;
-            owner.image = getMediaUrl(dbRes.user.profile.image);
+            owner.image_url = getMediaUrl(dbRes.user.profile.image);
             owner.contact = dbRes.user.profile.contact;
             owner.points = dbRes.user.profile.points;
         }

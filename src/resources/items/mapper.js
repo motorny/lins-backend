@@ -12,7 +12,7 @@ export const composeItemObjToSendMinified = (item) => {
             owner = {id: item.storage.user.id};
             if (item.storage.user.profile) {
                 owner.username = item.storage.user.profile.username;
-                owner.image = getMediaUrl(item.storage.user.profile.image);
+                owner.image_url = getMediaUrl(item.storage.user.profile.image);
             }
         }
     }
@@ -22,7 +22,7 @@ export const composeItemObjToSendMinified = (item) => {
         name: item.name,
         description: item.description,
         location: location,
-        image: getMediaUrl(item.image),
+        image_url: getMediaUrl(item.image),
         owner: owner,
         status: status,
         _links: {_self: composeURL(urljoin(ITEMS_E_N, item.id.toString()))}
@@ -45,7 +45,7 @@ export const composeItemObjToSendFull = (item) => {
             owner = {id: item.storage.user.id};
             if (item.storage.user.profile) {
                 owner.username = item.storage.user.profile.username;
-                owner.image = getMediaUrl(item.storage.user.profile.image);
+                owner.image_url = getMediaUrl(item.storage.user.profile.image);
                 owner.contact = item.storage.user.profile.contact;
                 owner.points = item.storage.user.profile.points;
                 profileId = item.storage.user.profile.id;
@@ -58,7 +58,7 @@ export const composeItemObjToSendFull = (item) => {
         name: item.name,
         description: item.description,
         location: location,
-        image: getMediaUrl(item.image),
+        image_url: getMediaUrl(item.image),
         storage: storage,
         owner: owner,
         tags: item.tags,

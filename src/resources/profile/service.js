@@ -41,7 +41,7 @@ export async function composeOwnerObject(userID) {
             id: userID
         };
     }
-    profile.image = getMediaUrl(profile.image);
+    profile.image_url = getMediaUrl(profile.image);
     return {
         id: userID,
         ...profile.dataValues
@@ -70,7 +70,7 @@ async function getUserPublicInfo(query) {
         for (let j = 0; j < storages.length; ++j) {
             await Item.findAll({where: {storage_id: storages[j].id}}).then(items => {
                 for(let i = 0; i< items.length; ++i) {
-                   items[i].image = process.env.MEDIA_PATH + '/' + items[i].image;
+                   items[i].image_url = getMediaUrl(items[i].image);
                 }
                 retObj.items = items;
             });
