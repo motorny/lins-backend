@@ -24,7 +24,7 @@ const Profile = sequelizeBase.define('profiles', {
                 msg: 'This username is already existing. Choose something else'
             },
         },
-        image_url: {
+        image: {
             type: Sequelize.STRING,
             validate: {
                 notEmpty: false,

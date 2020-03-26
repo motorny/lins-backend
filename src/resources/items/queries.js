@@ -47,7 +47,7 @@ export async function getAllItemsFromDb(filter, offset, limit) {
                     attributes: ['id'],
                     include: [{
                         model: Profile,
-                        attributes: ['id', 'username', 'image_url']
+                        attributes: ['id', 'username', 'image']
                     }]
                 }]
             },
@@ -67,7 +67,7 @@ export async function getItemByIdFromDb(itemID) {
                     attributes: ['id'],
                     include: [{
                         model: Profile,
-                        attributes: ['id', 'username', 'image_url', 'contact', 'points']
+                        attributes: ['id', 'username', 'image', 'contact', 'points']
                     }]
                 }]
             },

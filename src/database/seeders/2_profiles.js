@@ -14,7 +14,7 @@ module.exports = {
     */
     return queryInterface.bulkInsert('profiles', [{
       username: 'Johny',
-      image_url: 'https://123.com',
+      image: 'https://123.com',
       location: 'home',
       role: 'user',
       contact: '8-921-123-345',
@@ -25,7 +25,7 @@ module.exports = {
     },
     {
       username: 'Anna-Maria',
-      image_url: 'https://123Annet.com',
+      image: 'https://123Annet.com',
       location: 'Johnys home',
       role: 'admin',
       contact: '8-921-123-345-567',
@@ -36,7 +36,7 @@ module.exports = {
     },
     {
       username: 'Johnys Brother',
-      image_url: 'https://bro.com',
+      image: 'https://bro.com',
       location: 'Anna-Marias home',
       role: 'user',
       contact: '8-921-123-22345',
@@ -47,7 +47,7 @@ module.exports = {
     },
     {
       username: 'Johnys Sister',
-      image_url: 'https://sis.com',
+      image: 'https://sis.com',
       location: 'work',
       role: 'user',
       contact: '8-921-123-345',
@@ -58,7 +58,7 @@ module.exports = {
     },
       {
         username: 'Elon Muskatron',
-        image_url: 'https://tesla.com',
+        image: 'https://tesla.com',
         location: 'work',
         role: 'user',
         contact: '8-921-123-345',
@@ -69,7 +69,7 @@ module.exports = {
       },
       {
         username: 'Strange Donny',
-        image_url: 'https://lol.com',
+        image: 'https://lol.com',
         location: 'zzz',
         role: 'user',
         contact: '8-921-123-345',
@@ -80,7 +80,7 @@ module.exports = {
       },
       {
         username: 'Infinity',
-        image_url: 'https://blackhole.com',
+        image: 'https://blackhole.com',
         location: 'black hole',
         role: 'admin',
         contact: '8-921-123-345',
