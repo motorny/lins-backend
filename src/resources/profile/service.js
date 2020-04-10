@@ -70,13 +70,12 @@ async function getUserPublicInfo(query) {
         for (let j = 0; j < storages.length; ++j) {
             await Item.findAll({where: {storage_id: storages[j].id}}).then(items => {
                 for(let i = 0; i< items.length; ++i) {
-                   items[i].image_url = getMediaUrl(items[i].image);
+                   items[i].dataValues.image_url = getMediaUrl(items[i].image);
                 }
                 retObj.items = items;
             });
         }
     });
-
     return retObj;
 }
 
