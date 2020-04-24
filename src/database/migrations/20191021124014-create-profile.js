@@ -19,7 +19,7 @@ module.exports = {
       },
       password_hash: Sequelize.STRING,
       password_salt: Sequelize.STRING,
-      image_url: {
+      image: {
         type: Sequelize.STRING,
         validate: {
           isUrl: true,

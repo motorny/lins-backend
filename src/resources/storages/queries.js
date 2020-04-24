@@ -8,7 +8,7 @@ export async function getStorageByIDFromDb(storageId, includeItemsLimit) {
             attributes: ['id'],
             include: [{
                 model: Profile,
-                attributes: ['id', 'username', 'image_url', 'contact', 'points']
+                attributes: ['id', 'username', 'image', 'contact', 'points']
             }],
         },
     ];

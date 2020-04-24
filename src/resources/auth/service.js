@@ -26,9 +26,14 @@ async function acquireToken(body) {
     }
     const token = generateAuthToken(user);
     logger.info(`Creating token with lifetime ${process.env.JWT_LIFETIME} sec. for user ${user.login} (id: ${user.id})`);
+    const now = new Date();
+    console.log(now);
+    const expireDate = new Date(now.getTime() + process.env.JWT_LIFETIME * 1000);
+    console.log(expireDate);
     return {
         user_id: user.id,
-        token: token
+        token: token,
+        token_expire: expireDate.toString(),
     }
 }
 

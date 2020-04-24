@@ -8,7 +8,7 @@
       "description": "User's Name",
       "example": "John Doe"
     },
-    "image_url": {
+    "image": {
       "title": "Profile's image",
       "description": "base64 encoded image",
       "type": "string"

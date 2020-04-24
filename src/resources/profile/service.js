@@ -17,9 +17,9 @@ async function createNewProfile(requestBody) {
     if (!adminPrivilege) {
         throw createError(400, 'Not enough privilege');
     }
-    if (requestBody.image_url) {
+    if (requestBody.image) {
         // relative path to the saved image is returned
-        requestBody.image_url = await saveBase64ToImage(requestBody.image_url, 'profile');
+        requestBody.image = await saveBase64ToImage(requestBody.image, 'profile');
         logger.debug(`Image saved to media storage`);
     }
     let errMsg = Error.CANNOT_INSERT_VALUE_INTO_TABLE;
@@ -34,14 +34,14 @@ export async function composeOwnerObject(userID) {
         return null;
     const profile = await Profile.findOne({
         where: {user_id: userID},
-        attributes: [['id', 'profile_id'], 'username', 'image_url', 'location', 'contact', 'points']
+        attributes: [['id', 'profile_id'], 'username', 'image', 'location', 'contact', 'points']
     });
     if (!profile) {
         return {
             id: userID
         };
     }
-    profile.image_url = getMediaUrl(profile.image_url);
+    profile.image_url = getMediaUrl(profile.image);
     return {
         id: userID,
         ...profile.dataValues
@@ -69,11 +69,13 @@ async function getUserPublicInfo(query) {
         /* Search for items associated with given storage */
         for (let j = 0; j < storages.length; ++j) {
             await Item.findAll({where: {storage_id: storages[j].id}}).then(items => {
+                for(let i = 0; i< items.length; ++i) {
+                   items[i].dataValues.image_url = getMediaUrl(items[i].image);
+                }
                 retObj.items = items;
             });
         }
     });
-
     return retObj;
 }
 
@@ -101,9 +103,9 @@ async function updateUserInfo(userInfo) {
     if (!(adminPrivilege || privilege)) {
         throw createError(400, 'Not enough privilege');
     }
-    if (userInfo.image_url) {
+    if (userInfo.image) {
         // relative path to the saved image is returned
-        userInfo.image_url = await saveBase64ToImage(userInfo.image_url, 'profile');
+        userInfo.image = await saveBase64ToImage(userInfo.image, 'profile');
         logger.debug(`Image saved to media storage`);
     }
     await Profile.update(

@@ -842,7 +842,7 @@ definitions:
         type: "string"
         description: "Item name"
         example: "HDMI connector"
-      image_url:
+      image:
         title: "Item's image"
         description: "URL to fetch an image"
         type: "string"
@@ -875,7 +875,7 @@ definitions:
             description: "User's name"
             type: "string"
             example: "Petr"
-          image_url:
+          image:
             title: "User's image"
             description: "URL to fetch an image"
             type: "string"
@@ -902,7 +902,7 @@ definitions:
         type: "string"
         description: "Item name"
         example: "HDMI connector"
-      image_url:
+      image:
         title: "Item's image"
         description: "URL to fetch an image"
         type: "string"
@@ -945,7 +945,7 @@ definitions:
             description: "User's name"
             type: "string"
             example: "Petr"
-          image_url:
+          image:
             title: "User's image"
             description: "URL to fetch an image"
             type: "string"
@@ -1064,7 +1064,7 @@ definitions:
         example: "ItemGiver"
         minLength: 1
 
-      image_url:
+      image:
         type: "string"
         description: "Avatar (base64Encoded)"
         example: "???"

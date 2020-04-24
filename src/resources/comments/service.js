@@ -81,7 +81,7 @@ async function changeCommentById(commentID, body) {
         body.image = await saveBase64ToImage(body.image, 'comments');
         logger.debug(`Image saved to media storage: ${comment.image}`);
     }
-    return await comment.update(body, {fields: ['comment', 'title', 'image_url']});
+    return await comment.update(body, {fields: ['comment', 'title', 'image']});
 }
 
 export default {
