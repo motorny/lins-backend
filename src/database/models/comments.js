@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 import sequelizeBase from "./base";
 
-import Profile from "./profile";
+import User from "./users";
 import Item from "./items";
 
 const Comment = sequelizeBase.define('comments', {
@@ -30,7 +30,7 @@ const Comment = sequelizeBase.define('comments', {
         freezeTableName: true
     });
 
-Comment.belongsTo(Profile, {foreignKey: {name: 'user_id', allowNull: false}});
+Comment.belongsTo(User, {foreignKey: {name: 'user_id', allowNull: false}});
 Comment.belongsTo(Item, {foreignKey: {name: 'item_id', allowNull: false}});
 
 export default Comment;
