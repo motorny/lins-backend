@@ -812,8 +812,6 @@ paths:
       responses:
         200:
           description: "Success"
-        412:
-          description: "Item ID is not valid"
       security:
         - JWT: []
 

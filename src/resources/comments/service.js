@@ -25,10 +25,6 @@ async function addNewComment(comment, user) {
 
 async function getCommentsByItemId(itemID) {
     const allComments = await Comment.findAll({where: {item_id: itemID}});
-    if (allComments.length === 0){
-        logger.debug(`Item with id ${itemID} not found`);
-        throw createError(412, 'Item not found');
-    }
     return {
         count: allComments.length,
         comments: allComments
