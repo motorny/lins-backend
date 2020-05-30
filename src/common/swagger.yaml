@@ -292,7 +292,6 @@ paths:
       security:
         - JWT: []
 
-
   /version:
     get:
       tags:
@@ -557,7 +556,6 @@ paths:
       security:
         - JWT: []
 
-
   /storages/{storageID}:
     get:
       tags:
@@ -639,7 +637,6 @@ paths:
       security:
         - JWT: []
 
-
   /profile:
     post:
       tags:
@@ -676,7 +673,6 @@ paths:
           description: "Not authorized or token not valid"
       security:
         - JWT: []
-
 
   /profile/{profileId}:
     get:
@@ -770,6 +766,116 @@ paths:
       security:
         - JWT: []
 
+  /comments:
+    post:
+      tags:
+        - "comments"
+      summary: "Add new comment"
+      description: "Certain user adds comment to an item"
+      operationId: "addComment"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "commentData"
+          description: "Comment data"
+          required: true
+          schema:
+            $ref: "#/definitions/Comment"
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Wrong item appeal"
+      security:
+        - JWT: []
+
+  /comments/{id}:
+    get:
+      tags:
+        - "comments"
+      summary: "Get all comments for certain item"
+      description: "getAllComments"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of the item"
+          reqired: true
+          type: "integer"
+          format: "integer"
+      responses:
+        200:
+          description: "Success"
+        412:
+          description: "Item ID is not valid"
+      security:
+        - JWT: []
+
+    delete:
+      tags:
+        - "comments"
+      summary: "Delete comment"
+      description: ""
+      operationId: "deleteComment"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of the comment"
+          required: true
+          type: "integer"
+          format: "integer"
+      responses:
+        200:
+          description: "Success"
+        403:
+          description: "Not authorized or token not valid"
+        412:
+          description: "Comment ID is not valid"
+      security:
+        - JWT: []
+
+    put:
+      tags:
+        - "comments"
+      summary: "Update existing comment"
+      description: ""
+      operationId: "editComment"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of the comment"
+          required: true
+          type: "integer"
+          format: "integer"
+        - in: "body"
+          name: "commentData"
+          description: "Comment data"
+          required: true
+          schema:
+            $ref: "#/definitions/Comment"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Comment"
+        403:
+          description: "Not authorized for this action or token not valid"
+        412:
+          description: "Comment ID is not valid"
+      security:
+        - JWT: []
 
 securityDefinitions:
   JWT:
@@ -786,6 +892,7 @@ definitions:
         description: "Tag string"
         example: "accessories"
     required: ["tag"]
+
   TagStat:
     type: "object"
     properties:
@@ -801,6 +908,7 @@ definitions:
         type: "integer"
         description: "Count of items, which has this tag assigned"
         example: 23
+
   Item:
     type: "object"
     properties:
@@ -829,6 +937,7 @@ definitions:
         items:
           type: "integer"
         description: "Ids of the Tags for this item"
+
   ItemMini:
     type: "object"
     properties:
@@ -1007,7 +1116,6 @@ definitions:
             description: "Url to get all proflie's info"
             example: "http://example.com/profiles/2"
 
-
   Storage:
     type: "object"
     properties:
@@ -1054,7 +1162,6 @@ definitions:
         items:
           $ref: '#/definitions/Storage'
 
-
   Profile:
     type: "object"
     properties:
@@ -1089,6 +1196,32 @@ definitions:
         description: "some form of bonus program"
         example: 1
 
+  Comment:
+    type: "object"
+    properties:
+      title:
+        title: "Title"
+        type: "string"
+        description: "Title for comment"
+        example: "Best item in the world!"
+        minLength: 1
+      image:
+        title: "Item's image"
+        description: "base64 encoded image"
+        type: "string"
+      comment:
+        title: "Commentary itself"
+        type: "string"
+        description: "Full text of the comment"
+        example: "Used for three days. Very grateful for this item"
+      user_id:
+        title: "User id"
+        type: "integer"
+        description: "Id of the user, who left the comment"
+      item_id:
+        title: "Item id"
+        type: "integer"
+        description: "If of the item to which comment is written"
 
 externalDocs:
   description: "Visit Github page and explore sourcecode"

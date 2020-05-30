@@ -18,17 +18,6 @@
       "type": "string",
       "description": "Title of the comment",
       "example": "Recommend!!!"
-    },
-    "user_id": {
-      "title": "User id",
-      "type": "integer",
-      "description": "Id of the user who leaves comment"
-    },
-    "item_id" : {
-      "title": "Item id",
-      "type": "integer",
-      "description": "Id of the item to which the comment is referred"
     }
-  },
-  "required": ["user_id", "item_id"]
+  }
 }
