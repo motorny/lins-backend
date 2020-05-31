@@ -143,9 +143,11 @@ async function changeItemById(itemID, body, user) {
         body.image = await saveBase64ToImage(body.image, 'items');
         logger.debug(`Image saved to media storage: ${item.image}`);
     }
-
+    if (body.status){
+        body.status = await ItemStatus.findOne({where: {status: body.status}}).get('id');
+    }
     logger.info(`Updating item ${item.name} (id: ${item.id}) with values ${body}`);
-    await item.update(body, {fields: ['name', 'description', 'image', 'storage_id']});
+    await item.update(body, {fields: ['name', 'description', 'image', 'storage_id', 'status']});
 
     await assignTags(item, body.tag_ids);
     const updatedItem = await getItemByIdFromDb(item.id);

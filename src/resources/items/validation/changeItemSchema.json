@@ -25,6 +25,11 @@
       "type": "integer",
       "description": "Id of the storage the item will be assigned to."
     },
+    "status": {
+      "title": "Item status",
+      "type": "string",
+      "description": "Item status."
+    },
     "tag_ids" : {
       "title": "Tags id",
       "type": "array",
